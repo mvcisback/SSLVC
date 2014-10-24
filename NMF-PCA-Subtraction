@@ -1,0 +1,61 @@
+%% NMF and PCA and Frame Subtraction
+%% Ramin Anushiravani 
+clc;clear all; close all
+load('VIDEO_SOUND.mat')
+num = size(video_sound,2);
+%%
+h= 200;w = 300;
+[W H] = nnmf((video_sound),2); 
+figure;imagesc(W);figure;imagesc(H);
+%% NMF results 
+G = W*H;
+sound_len = size(G(h*w+1:end)); 
+
+%% see frames 
+for i = 2 :num
+    frame(:,i) = abs(G(:,i)); 
+    videoF = reshape(frame(1:h*w,i),h,w); 
+%     soundF = frame(h*w+1:end,i-1);
+    subplot(1,2,1)
+    imagesc(abs(videoF).^0.85);colormap bone; hold on;
+%     subplot(1,2,2)
+%     plot(soundF);
+    pause(0.3)
+    clc
+end
+%% frame subtraction 
+for i = 2: num
+     frame(:,i-1) = (G(:,i)-G(:,i-1));  
+end
+% %% find most movements in the frames 
+% x = mean(preFrame,2);
+% [d ind] = max(abs(x)); 
+% thr = 0.15;
+% index = find(abs(x)>d-thr);
+% for i = 1:num
+% t(:,i) = video_sound(:,(i));%reshape(vecFrames(:,index(i)),720,1280); 
+% % imshow(t);
+% % pause(2);
+% end
+% %% PCA 
+COV = cov(G);
+[Pic,pc,var,u] = pca_SVD(COV,2); 
+scatter(u(:,2),u(:,3)); 
+SCALE = 0.02; 
+for i=1:1:size(u,1)
+    %# compute XData/YData vectors of each image
+   
+    if h>w
+        scaleY = SCALE;
+        scaleX = SCALE* w/h;
+    else
+        scaleX = SCALE; 
+        scaleY = SCALE * h/w;
+    end
+    xx =  linspace(-scaleX/2, scaleX/2, h) + u(i,2);
+    yy =  linspace(-scaleY/2, scaleY/2, w) + u(i,3);
+
+    image('XData',xx, 'YData',yy, 'CData',reshape(G(1:h*w,i),h,w), 'CDataMapping','scaled')
+end
+axis image, axis ij; colormap bone
+set(gca, 'CLimMode','auto')
