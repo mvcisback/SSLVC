@@ -74,13 +74,13 @@ def batch(arr, fps, winlen=WINLEN):
 
 
 @click.command()
-@click.argument('input-mp4')
-@click.argument('output-mat')
-@click.option("--silence")
-@click.option("--speaker1")
-@click.option("--speaker2")
-@click.option("--num-features", default=13)
-@click.option("--num-frames", default=1)
+@click.argument('input-mp4', type=click.Path(exists=True))
+@click.argument('output-mat', type=click.Path())
+@click.option("--silence", type=click.Path(exists=True), required=True)
+@click.option("--speaker1", type=click.Path(exists=True), required=True)
+@click.option("--speaker2", type=click.Path(exists=True), required=True)
+@click.option("--num-features", default=13, type=click.IntRange(min=1))
+@click.option("--num-frames", default=1, type=click.IntRange(min=1))
 def main(input_mp4, output_mat, silence, speaker1, speaker2, num_features,
          num_frames):
     my_features = partial(features, frames=num_frames, features=num_features)
