@@ -11,6 +11,7 @@ import shutil
 from funcy import pluck, partial, compose
 from numpy import hstack, ones
 from scipy.io.wavfile import read as wav_read
+from scipy.io import savemat
 from sklearn.naive_bayes import GaussianNB
 from sklearn.svm import LinearSVC
 from features import mfcc
@@ -104,7 +105,7 @@ def main():
                                  ["silence2.wav", "marcell2.wav", "faraz2.wav"],
                                  wav_to_features, LinearSVC, GaussianNB)
     
-    print(classify(mp4_to_features("videos/1_stationary_single.mp4").T))
+    savemat("out.mat", {"x": classify(mp4_to_features("videos/1_stationary_single.mp4").T)})
 
 if __name__ == '__main__':
     main()
