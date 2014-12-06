@@ -62,15 +62,11 @@ def to_wav(mp4_path):
 
 FPS = 30    
 WINLEN = 1/FPS
-WINSTEP = WINLEN
     
-def features(rate_sig):
+def features(rate_sig, frames, features):
     rate, sig = rate_sig
-    return mfcc(sig, rate, winlen=WINLEN, winstep=WINSTEP).T
-
-
-wav_to_features = compose(features, wav_read)
-mp4_to_features = compose(features, to_wav)
+    win_len = frames*WINLEN
+    return mfcc(sig, rate, winlen=win_len, winstep=win_len, numcep=features).T
 
 
 def batch(arr, fps, winlen=WINLEN):
@@ -78,12 +74,19 @@ def batch(arr, fps, winlen=WINLEN):
 
 
 @click.command()
-@click.argument('input_mp4')
-@click.argument('output_mat')
+@click.argument('input-mp4')
+@click.argument('output-mat')
 @click.option("--silence")
 @click.option("--speaker1")
 @click.option("--speaker2")
-def main(input_mp4, output_mat, silence, speaker1, speaker2):
+@click.option("--num-features", default=13)
+@click.option("--num-frames", default=1)
+def main(input_mp4, output_mat, silence, speaker1, speaker2, num_features,
+         num_frames):
+    my_features = partial(features, frames=num_frames, features=num_features)
+    wav_to_features = compose(my_features, wav_read)
+    mp4_to_features = compose(my_features, to_wav)
+
     classify = train_classifiers([silence, speaker1, speaker2], 
                                  wav_to_features, LinearSVC, GaussianNB)
     
