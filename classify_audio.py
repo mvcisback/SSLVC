@@ -77,18 +77,11 @@ def to_wav(mp4_path):
         check_call(["ffmpeg", "-v", "0", "-i", mp4_path, wav_path])
         return wav_read(wav_path)
 
-
-FPS = 30    
-WINLEN = 1/FPS
     
-def features(rate_sig, frames, features):
+def features(rate_sig, frames, features, fps):
     rate, sig = rate_sig
-    win_len = frames*WINLEN
+    win_len = frames*(1/fps)
     return mfcc(sig, rate, winlen=win_len, winstep=win_len, numcep=features).T
-
-
-def batch(arr, fps, winlen=WINLEN):
-    return array(map(median, array_split(arr, len(arr)//n)))
 
 
 @click.command()
@@ -100,9 +93,11 @@ def batch(arr, fps, winlen=WINLEN):
 @click.option("--num-features", default=13, type=click.IntRange(min=1))
 @click.option("--num-frames", default=1, type=click.IntRange(min=1))
 @click.option("--verbose/--silent", default=False)
+@click.option("--fps", default=30, type=click.IntRange(min=1))
 def main(input_mp4, output_mat, noise, speaker1, speaker2, num_features,
-         num_frames, verbose):
-    my_features = partial(features, frames=num_frames, features=num_features)
+         num_frames, verbose, fps):
+    my_features = partial(features, frames=num_frames, features=num_features, 
+                          fps=fps)
     wav_to_features = compose(my_features, wav_read)
     mp4_to_features = compose(my_features, to_wav)
 
