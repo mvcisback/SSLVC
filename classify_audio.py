@@ -41,7 +41,7 @@ def split_data(data):
     partitioned = [(x[:, :-100], x[:, -100:]) for x in data]
     train, test = zip(*partitioned)
     return train, test
-    
+
 
 def train(data_and_labels, cls):
     X, dense_labels = dense_data_and_labels(data_and_labels)
@@ -49,7 +49,7 @@ def train(data_and_labels, cls):
     return classifier.fit(X, dense_labels)
 
 
-def train_classifiers(training_wavs, load_bucket, is_voice_cls, which_cls, 
+def train_classifiers(training_wavs, load_bucket, is_voice_cls, which_cls,
                       verbose=False):
     data = map(load_bucket, training_wavs)
     training, test = split_data(data)
@@ -64,10 +64,10 @@ def train_classifiers(training_wavs, load_bucket, is_voice_cls, which_cls,
 
     if verbose:
         print(score1, score2)
-    
+
     def classify(data):
         return is_voice.predict(data)*which_speaker.predict(data)
-    
+
     return classify
 
 
@@ -77,7 +77,7 @@ def to_wav(mp4_path):
         check_call(["ffmpeg", "-v", "0", "-i", mp4_path, wav_path])
         return wav_read(wav_path)
 
-    
+
 def features(rate_sig, frames, features, fps):
     rate, sig = rate_sig
     win_len = frames*(1/fps)
@@ -96,15 +96,15 @@ def features(rate_sig, frames, features, fps):
 @click.option("--fps", default=30, type=click.IntRange(min=1))
 def main(input_mp4, output_mat, noise, speaker1, speaker2, num_features,
          num_frames, verbose, fps):
-    my_features = partial(features, frames=num_frames, features=num_features, 
+    my_features = partial(features, frames=num_frames, features=num_features,
                           fps=fps)
     wav_to_features = compose(my_features, wav_read)
     mp4_to_features = compose(my_features, to_wav)
 
-    classify = train_classifiers([noise, speaker1, speaker2], 
-                                 wav_to_features, LinearSVC, GaussianNB, 
+    classify = train_classifiers([noise, speaker1, speaker2],
+                                 wav_to_features, LinearSVC, GaussianNB,
                                  verbose)
-    
+
     savemat(output_mat, {"x": classify(mp4_to_features(input_mp4).T)})
 
 if __name__ == '__main__':
