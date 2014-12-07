@@ -88,20 +88,20 @@ def features(rate_sig, frames, features, fps):
 @click.argument('input-mp4', type=click.Path(exists=True))
 @click.argument('output-mat', type=click.Path())
 @click.option("--noise", type=click.Path(exists=True), required=True)
-@click.option("--speaker1", type=click.Path(exists=True), required=True)
-@click.option("--speaker2", type=click.Path(exists=True), required=True)
+@click.option("--speaker", type=click.Path(exists=True), required=True, 
+              multiple=True)
 @click.option("--num-features", default=13, type=click.IntRange(min=1))
 @click.option("--num-frames", default=1, type=click.IntRange(min=1))
 @click.option("--verbose/--silent", default=False)
 @click.option("--fps", default=30, type=click.IntRange(min=1))
-def main(input_mp4, output_mat, noise, speaker1, speaker2, num_features,
+def main(input_mp4, output_mat, noise, speaker, num_features,
          num_frames, verbose, fps):
     my_features = partial(features, frames=num_frames, features=num_features,
                           fps=fps)
     wav_to_features = compose(my_features, wav_read)
     mp4_to_features = compose(my_features, to_wav)
 
-    classify = train_classifiers([noise, speaker1, speaker2],
+    classify = train_classifiers([noise] + list(speaker),
                                  wav_to_features, LinearSVC, GaussianNB,
                                  verbose)
 
