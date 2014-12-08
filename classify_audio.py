@@ -38,7 +38,7 @@ def dense_data_and_labels(data_and_labels):
 
 def split_data(data):
     map(shuffle, data)
-    partitioned = [(x[:, :-100], x[:, -100:]) for x in data]
+    partitioned = [(x[:,:-10], x[:,-10:]) for x in data]
     train, test = zip(*partitioned)
     return train, test
 
@@ -57,13 +57,13 @@ def train_classifiers(training_wavs, load_bucket, is_voice_cls, which_cls,
     is_voice = train(zip(training, [0] + n_speakers*[1]), is_voice_cls)
     which_speaker = train(zip(training[1:], range(1, n_speakers+1)), which_cls)
 
-    X2, labels2 = dense_data_and_labels(zip(test, [0, 1, 1]))
-    score1 = is_voice.score(X2, labels2)
-
-    X3, labels3 = dense_data_and_labels(zip(test[1:], [1, 2]))
-    score2 = which_speaker.score(X3, labels3)
-
     if verbose:
+        X2, labels2 = dense_data_and_labels(zip(test, [0] + n_speakers*[1]))
+        score1 = is_voice.score(X2, labels2)
+        
+        X3, labels3 = dense_data_and_labels(zip(test[1:], range(1, n_speakers+1)))
+        score2 = which_speaker.score(X3, labels3)
+
         print(score1, score2)
 
     def classify(data):
