@@ -53,8 +53,9 @@ def train_classifiers(training_wavs, load_bucket, is_voice_cls, which_cls,
                       verbose=False):
     data = map(load_bucket, training_wavs)
     training, test = split_data(data)
-    is_voice = train(zip(training, [0, 1, 1]), is_voice_cls)
-    which_speaker = train(zip(training[1:], [1, 2]), which_cls)
+    n_speakers = len(training_wavs)-1
+    is_voice = train(zip(training, [0] + n_speakers*[1]), is_voice_cls)
+    which_speaker = train(zip(training[1:], range(1, n_speakers+1)), which_cls)
 
     X2, labels2 = dense_data_and_labels(zip(test, [0, 1, 1]))
     score1 = is_voice.score(X2, labels2)
