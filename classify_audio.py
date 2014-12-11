@@ -67,7 +67,7 @@ def train_classifiers(training_wavs, load_bucket, is_voice_cls, which_cls,
         print(score1, score2)
 
     def classify(data):
-        return is_voice.predict(data)*which_speaker.predict(data)
+        return is_voice.predict(data), which_speaker.predict_log_proba(data)
 
     return classify
 
@@ -106,7 +106,8 @@ def main(input_mp4, output_mat, noise, speaker, num_features,
                                  wav_to_features, LinearSVC, GaussianNB,
                                  verbose)
 
-    savemat(output_mat, {"x": classify(mp4_to_features(input_mp4).T)})
+    voice, person = classify(mp4_to_features(input_mp4).T)
+    savemat(output_mat, {"voice": voice, "person": person})
 
 if __name__ == '__main__':
     main()
