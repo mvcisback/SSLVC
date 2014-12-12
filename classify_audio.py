@@ -21,6 +21,10 @@ from scipy.io import savemat
 from sklearn.naive_bayes import GaussianNB
 from sklearn.svm import LinearSVC
 from sklearn.decomposition import PCA
+from sklearn.mixture import GMM
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.cross_validation import cross_val_score
 from features import mfcc
 
 
@@ -34,7 +38,7 @@ def windows(x, win_size=WIN_SIZE, hop=HOP):
 
 def log_spectrogram(x, win_size=WIN_SIZE, hop=HOP):
     to_freq = compose(np.transpose, np.matrix, np.fft.fft,
-                      partial(mul, np.hamming(win_size)))
+                      partial(mul, np.bartlett(win_size)))
 
     return log(np.abs(np.array(np.hstack(map(to_freq, windows(x, win_size, hop)))))[win_size/2:,:])
 
@@ -57,7 +61,7 @@ def dense_data_and_labels(data_and_labels):
 
 
 def split_data(data):
-    partitioned = [(x[:,:-10], x[:,-10:]) for x in data]
+    partitioned = [(x[:,:-20], x[:,-20:]) for x in data]
     train, test = zip(*partitioned)
     return train, test
 
@@ -85,10 +89,8 @@ def gen_stats(data, training, test, n_speakers, is_voice, which_speaker):
     X3, labels3 = dense_data_and_labels(zip(test[1:], range(1, n_speakers+1)))
     score2 = which_speaker.score(X3, labels3)
 
-    print(score1, score2)
-
     savemat("data.mat", {"sp" + str(i): elem for i, elem in enumerate(data)})
-
+    return score1, score2
 
 
 def train_classifiers(training_wavs, load_bucket, is_voice_cls, which_cls,
@@ -99,14 +101,12 @@ def train_classifiers(training_wavs, load_bucket, is_voice_cls, which_cls,
     is_voice = train(zip(training, [0] + n_speakers*[1]), is_voice_cls)
     which_speaker = train(zip(training[1:], range(1, n_speakers+1)), which_cls)
 
-    if verbose:
-        gen_stats(data, training, test, n_speakers, is_voice, which_speaker)
-        
+    scores = gen_stats(data, training, test, n_speakers, is_voice, which_speaker)
 
     def classify(data):
         return is_voice.predict(data), which_speaker.predict_log_proba(data)
 
-    return classify
+    return classify, scores
 
 
 def to_wav(mp4_path):
@@ -124,9 +124,10 @@ def features(rate_sig, frames, features, fps, use_mfcc=False):
     else:
         win_len = int(win_len*rate)
         y = log_spectrogram(sig[:, 0], win_size=win_len, hop=win_len)
+    y = y.T; shuffle(y); y = y.T
     return y
 
-
+        
 @click.command()
 @click.argument('input-mp4', type=click.Path(exists=True))
 @click.argument('output-mat', type=click.Path())
@@ -145,9 +146,18 @@ def main(input_mp4, output_mat, noise, speaker, num_features,
     wav_to_features = compose(my_features, wav_read)
     mp4_to_features = compose(my_features, to_wav)
 
-    classify = train_classifiers([noise] + list(speaker),
-                                 wav_to_features, LinearSVC, GaussianNB,
-                                 verbose)
+    train_classifiers2 = partial(train_classifiers, [noise] + list(speaker), 
+                                 wav_to_features, LinearSVC, verbose=verbose)
+    
+    results = map(train_classifiers2, [AdaBoostClassifier, GaussianNB, LinearSVC,
+                                       partial(KNeighborsClassifier, n_neighbors=20)])
+
+    if verbose:
+        for name, (_, score) in zip(["Ada", "GNB", "LSVM", "NN"], results):
+            print(name, score)
+    
+    classify, _ = max(results, key=lambda x: (x[1][0] + x[1][1])/2)
+    
 
     mp4_features = mp4_to_features(input_mp4).T
     
