@@ -57,7 +57,6 @@ def dense_data_and_labels(data_and_labels):
 
 
 def split_data(data):
-    map(shuffle, data)
     partitioned = [(x[:,:-10], x[:,-10:]) for x in data]
     train, test = zip(*partitioned)
     return train, test
