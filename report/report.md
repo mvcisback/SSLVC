@@ -1,7 +1,7 @@
 ---
 title: 3D AUDIO RECONSTRUCTION AND SPEAKER RECOGNITION USING SUPERVISED LEARNING METHODS BASED ON VOICE AND VISUAL CUES
 abstract: |
-   In this paper we present a creative approach to reconstruct 3D audio for multiple sources from a single channel input by detecting and tracking visual cues using supervised learning methods. We also discuss a similar approach for improving speaker’s classification from a video stream by employing both facial and speech likelihoods, in another word performing Multimodal Speaker Recognition in a video stream.
+   In this paper we present a creative approach to reconstruct 3D audio for multiple sources from a single channel input by detecting and tracking visual cues using supervised learning methods. We also discuss a similar approach for improving speaker’s classification from a video stream by employing both facial and speech likelihoods, or simply Multimodal Speaker Recognition on a video stream.
 
 keywords: |
   3D audio, speaker classification, visual cues, supervised learning, Multimodal Speaker Recognition
@@ -16,7 +16,7 @@ dept3: $^{\ddag}$Dept. of Physics
 Introduction {#sec:intro}
 ============
 
-Spatial audio and speaker classifications, both have important
+Spatial audio and speaker classifications both have important
 applications in video conferencing and entertainment. With spatial
 audio, one can listen to music and feel the depth and the directionality
 of the sound using headphones or crosstalk canceller speakers [1].
@@ -134,15 +134,21 @@ The procedure for reconstructing a 3D audio is as follows,
 
 1. Detect faces in the video stream for each frame and classify them to
 one in the database.
+
 2. Map the position of each face to a meaningful HRTF angle in each
 frame.
+
 3. Detect whether there is speech in a frame or not.
+
 4. Label the frames with speech from step 4 with their corresponding
 class label in the database.
+
 5. Use speech classification results to assign the speech from step 4 to
 the point find from step 2. That is, given a speech signal, find
 corresponding face location.
+
 6. Pick corresponding HRTFs from step 5 for each frame.
+
 7. Reconstruct 3D audio as shown in figure 1.
 
 Speaker Recognition
@@ -468,15 +474,16 @@ audio from, the link is provided in [6]. For the first case, we simply
 tracked one person in a video frame, mapped his face location to HRTF
 angles and then reconstruct spatial audio using corresponding HRTF
 angles from the single channel audio input as was shown in figure 1. The
-resulting video is named as $gobble\_cs598$.mp4 which as
-can also be found in [6]. For the second video, we recorded two speakers
-speaking, a snapshot was provided earlier in figure 2. We trained both
+resulting video named *gobble\_cs598.mp4* can be found in [6]. For
+ the second video, we recorded two speakers speaking, a snapshot was
+ provided earlier in figure 2. We trained both
 speakers’ facial and speech features beforehand as was discussed earlier
 in section III and IV and use that to find the face location. At every
 frame we detect and capture both speech and faces. Note that given our
 face model we already know where speakers are located at, so we simply
 classify each audio frame to one of three classes discussed in section
 IV. We can then create a spatial sound for the two users.
+
 In general we were able to recreate a sound that was guided by speaker’s
 faces. We also included some example video clips where a piece of music
 was guided by the users face. This technology can be specifically useful
