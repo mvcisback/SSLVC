@@ -145,7 +145,8 @@ The procedure is summarized in figure 3.
 After collecting a training database, the classifier 
 discussed in section III and IV is created.
 
-## 3D Audio Reconstruction ##
+3D Audio Reconstruction
+-----------------------
 
 The procedure for reconstructing a 3D audio is as follows:
 
