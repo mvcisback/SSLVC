@@ -118,7 +118,7 @@ detailed below.
 
 The calibration procedure is as follows,
 
-There is a required "silence" period for calibrating the Voice 
+First there is a required silence period for calibrating the Voice 
 Activity Detection discussed later.
 
 Then each user is asked in turn to,
