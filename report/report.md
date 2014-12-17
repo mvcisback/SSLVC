@@ -117,11 +117,13 @@ Each user is asked to,
 This calibration procedure is repeated until another clap sound is
 detected, which means there is another user whose database needs to be
 collected as well. This calibration procedure helps us particularly in
-labeling the training database.
+labeling the training database. This is summarized in figure 3.
 
-This is summarized in figure 3 below.
-
-![Calibration](calibration.jpg)
+\begin{figure}[htb]
+\center{\includegraphics[width=4.0cm]{calibration.jpg}}
+\label{fig:res}
+\caption{Calibration}
+\end{figure}
 
 After collecting a training database, we proceed making classifier which
 is discussed in more details in section III and IV.
@@ -216,7 +218,14 @@ create a precise training database. We then resize and vectorised all
 detected faces into a matrix for each user (face database). This is
 summarized in figure 5.
 
-![Face Detection](face_detection.jpg)
+\begin{figure}[htb]
+\begin{minipage}[b]{0.88\linewidth}
+\centering
+\centerline{\includegraphics[width=3.0cm]{face_detection.jpg}}
+\end{minipage}
+\caption{Face Detection}
+\label{fig:res}
+\end{figure}
 
 Note that if there is more than one user in the room, we need to be able
 to identify the approximate location of each so we can label them. This
@@ -241,14 +250,16 @@ that specific user is located at, e.g. left, right, up, down. The
 resulting pictures for frame subtraction, division and face detection is
 shown in figure 6.
 
-![Frame subtraction and division into two partitions for labeling each
-class](clap_motion.jpg)
 
-![Frame subtraction and division into two partitions for labeling each
-class](3d_audio_tracking_1.jpg)
-
-![Frame subtraction and division into two partitions for labeling each
-class](3d_audio_tracking_2.jpg)
+\begin{figure}[htb]
+\begin{minipage}[b]{0.88\linewidth}
+\centerline{\includegraphics[width=5.60cm]{clap_motion.jpg}}
+\centerline{\includegraphics[width=6.60cm]{3d_audio_tracking_1.jpg}}
+\centerline{\includegraphics[width=3.0cm]{3d_audio_tracking_2.jpg}}
+\end{minipage}
+\caption{Frame subtraction and division into two partitions for labeling each class}
+\label{fig:res}
+\end{figure}
 
 Face Classification
 -------------------
@@ -292,13 +303,14 @@ We left $10\%$ of our training database for testing and trained the
 remaining $90\%$. The result of our facial classifier is tabulated
 below.
 
-$$\begin{tabular}{ | l|c | r| }
+\begin{center}
+\begin{tabular}{ | l|c | r| }
 \hline
 Class 1 & $95\%$ \\ \hline
 Class 2 & $100\%$ \\ \hline
-\end{tabular}$$
-
-Table 1: Face Classification Accuracy
+\end{tabular}
+\end{center}
+\centerline{Table 1: Face Classification Accuracy}
 
 As expected we have high accuracies, since the two classes were shown to
 be linearly separable in 2 dimensions.
@@ -373,15 +385,16 @@ frequency cepstral coefficients (MFCC) as speech features. The
 classification results for four different classifiers are listed in
 table 2.
 
-$$\begin{tabular}{ | l|c | r| }
+\begin{center}
+\begin{tabular}{ | l|c | r| }
 \hline
 Classifier & LSC & MFCC \\ \hline
 Linear SVM & $99.9\%$ & $99.9\%$ \\ \hline
 Gaussian Naive Bayes & $99.9\%$ & $ 99.9\%$ \\ \hline
 20-Nearest Neighbor & $99.9\%$ & $ 99.9\%$ \\ \hline
-\end{tabular}$$
-
-Table 2: VAD Accuracy
+\end{tabular}
+\end{center}\centerline{Table 2: VAD Accuracy}
+\centerline{}
 
 As you can see the results from each classifier is near perfect. We
 chose linear SVM for further processing, due to its simplicity.
@@ -412,11 +425,11 @@ However, neither of the speech classes are separable in 2 dimensions for
 either features. We can only hope that using more PCA dimensions will
 help separating the two classes in higher dimensions.  The procedure for
 classifying speech is summarized in figure 12. The resulting
-classification results are shown in table 2 below. As you can see
+classification results are shown in table 3 below. As you can see
 Ada-Boost has the highest classification accuracy among all.
 
-
-$$\begin{tabular}{ | l|c | r| }
+\begin{center}
+\begin{tabular}{ | l|c | r| }
 \hline
 Classifier & LSC & MFCC \\ \hline
 Linear SVM & $83.0\%$ & $85.3\%$ \\ \hline
@@ -424,14 +437,17 @@ Gaussian Naive Bayes & $82.4\%$ & $80.2\%$ \\ \hline
 20-Nearest Neighbor & $84.9\%$ & $ 86.7\%$ \\ \hline
 Ada-Boost & $91.2\%$ & $ 90.3\%$ \\ \hline
 GMM & $83.5\%$ & $---$\\ \hline
-\end{tabular}$$
+\end{tabular}
+\end{center}\centerline{Table 3: Voice Classification Accuracy}
 
-Table 2: VAD Accuracy
-
-![MFCC (top) and LSC features (bottom) for three classes](mfcc_2pca.png)
-
-![MFCC (top) and LSC features (bottom) for three
-classes](spectral_log_2pca.png)
+\begin{figure}[htb]
+\begin{minipage}[b]{0.88\linewidth}
+\centerline{\includegraphics[width=6.6cm]{mfcc_2pca.png}}
+\centerline{\includegraphics[width=6.6cm]{spectral_log_2pca.png}}
+\end{minipage}
+\caption{MFCC (top) and LSC features (bottom) for three classes}
+\label{fig:res}
+\end{figure}
 
 ![Speech Classification)](speech_class.jpg)
 
@@ -477,18 +493,17 @@ speech classifier. We then evaluate the $P(user)_{k=1}^K$ over all video
 frames for all 10 values of $w$. We can then create a matrix of
 likelihoods as the one shown below.
 
-$\begin{aligned}
-P(user) = \begin{bmatrix}
-p_{1,1}&\dots& p{1,10}\\
-\vdots &\ddots &\vdots\\
-p_{k,1}&\dots&p(k,10)
-\end{bmatrix}\end{aligned}$
+> $\begin{aligned}
+> P(user) = \begin{bmatrix}
+> p_{1,1}&\dots& p{1,10}\\
+> \vdots &\ddots &\vdots\\
+> p_{k,1}&\dots&p(k,10)
+> \end{bmatrix}\end{aligned}$
 
 We then look for a value of $w$ that maximizes the user classification
 at most frames, that is,
 
-$\begin{aligned}
-w_{max} = argmax_w(P(user)_{k=1}^K \&_ {w=1}^{10})\end{aligned}$
+> $\begin{aligned}w_{max} = argmax_w(P(user)_{k=1}^K \&_ {w=1}^{10})\end{aligned}$
 
 Where $K$ is the number of frames. For our video, it turned out that the
 value of $w$ is $4$. This means that the multimodal classifier is
