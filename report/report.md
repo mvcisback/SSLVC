@@ -121,7 +121,7 @@ The calibration procedure is as follows,
 First there is a required silence period for calibrating the Voice 
 Activity Detection discussed later.
 
-Then each user is asked in turn to,
+Then each user is asked in turn to:
 
 1. Clap hands and wave to the camera.
 2. Speak for about a minute while facing the camera.
@@ -182,8 +182,8 @@ classification probability.
 
 (@model) $P(user) = P(face|model)^{W_i}P(face \ model) + \ldots \\P(speech|model)^{W_{max}-W_i}P(speech \ model)$
 
-While prior probabilities given in equation 2 are assumed to be equally
-probable, in practice they can/should be estimated based on
+Here the prior probabilities in (@model) are assumed to be equally
+probable, although in practice they can/should be estimated based on
 prior data and the recording conditions.
 
 Steps 1 through 4 in *3D Audio Reconstruction* are also performed when doing
@@ -196,9 +196,8 @@ we do the following,
 frame analysis.
 2. Find the likelihood of each user’s speech given the speech model in
 each frame analysis.
-3. Plug the values from step 5 and 6 in equation 2.
-4. Determine the value of equation 2 for $w=1, 2..., 10$.
-5. Find $w$ such that, $argmax_w(P(user))$.
+3. Determine the value of (@model) for $w=1, 2..., 10$.
+4. Find $w = argmax_w(P(user))$.
 
 Higher $w$’s shows that the face classification results was better than
 speech classification results, and so we should put more weight on the
@@ -384,18 +383,25 @@ tracking over video frames.
 VOICE ACTIVITY DETECTION AND CLASSIFICATION
 ===========================================
 
-Voice Activity Detection
-------------------------
+The following are details concerning the procedure used for voice classification.
+When developing our models, 10% of the data was separated for testing and the
+remaining 90% for training each class. The STFT of the signal uses
+non-overlaping rectangular windows as long corresponding to one frame.
+The samples per frame is computed as $\frac{\text{samples}}{\text{seconds}}
+\frac{\text{seconds}}{\text{frames}}$. Frame time serves as the base unit because
+frames are the base unit in the facial analysis, allowing for one-to-one comparisons.[^2]
+We then project the extracted features to a lower dimensional space using PCA.
+This procedure mirrors the technique described in section 3 for training the face databases.
+
+Voice Activity Detection (VAD)
+-----------------------------
 
 Voice activity detection enables the filtering of non-speech components 
-(usually silence) from speech components. As mentioned in section 2, the
-calibration procedure labels the speech signals.
-
-In order to do VAD, we developed a supervised method by training speech 
-signals (the signals between claps) and non-speech signals (the signals before 
-the first clap). The VAD classification results for four different classifiers 
-using Log Spectral Coefficients (LSC) or Mel Frequency Cepstral Coefficients
-(MFCC) are listed in table 2.
+(usually silence) from speech components. In order to do VAD, we developed
+a supervised technique for labeling the speaker classes (the signals between claps)
+and non-speech signals (the signals before the first clap). The VAD classification
+results for four different classifiers using Log Spectral Coefficients (LSC) or 
+Mel Frequency Cepstral Coefficients (MFCC) are listed in table 2.
 
 \begin{center}
 \begin{tabular}{ | l|c | r| }
@@ -408,28 +414,15 @@ Gaussian Naive Bayes & $99.9\%$ & $99.9\%$ \\ \hline
 \end{center}\centerline{Table 2: VAD Accuracy}
 \centerline{}
 
-Here the results from each classifier are nearly perfect. 
+The results from each classifier are nearly perfect. 
 This is perhaps expected given the clear linear separability in
 figure 11. In fact, on inspection, the primary feature is unsurprisingly
-dominated by the energy level. 
-
-Ultimately, we selected linear SVM for further processing, due
-to its simplicity and speed. After removing non-speech components from the signal, 
-we create a database of each user’s speech using the calibration procedure mentioned
-in section 2.1. The system then trains each database separately in the same 
-manner described for faces in section III.
+dominated by the energy level. Because of the comparable accuracy of each 
+classifier, our final implementation uses a linear SVM due to its simplicity 
+and speed.
 
 Voice Classification
 --------------------
-
-10% of the data was separated for testing and the remaining 90% for
-training speech models for each class. The STFT of the signal uses
-non-overlaping rectangular windows as long corresponding to one frame.
-The samples per frame is computed as $\frac{\text{samples}}{\text{seconds}}
-\frac{\text{seconds}}{\text{frames}}$. Frame time serves as the base unit because
-frames are the base unit in the facial analysis, allowing for one-to-one comparisons.[^2]
-We then project the extracted features to a lower dimensional space using PCA.
-This procedure mirrors the technique described in section 3 for training the face databases.
 
 The procedure for classifying speech is summarized in figure 12. The resulting
 classification results are given in table 3.
