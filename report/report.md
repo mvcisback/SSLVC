@@ -61,7 +61,7 @@ the spatial response corresponding to a desired location in space. These
 impulse responses can be captured by recording a maximum length sequence
 (MLS) at listener’s ears at different angles. We can then extract
 corresponding impulse responses by cross-correlating the recorded MLS
-with the original MLS as shown in equation 1. These spatial responses
+with the original MLS as shown in (@1) (@2) (@3). These spatial responses
 are also called Head Related Impulse Response (hrir).
 
 > (@1) $index = argmax({C_{(MLS_{recorded},MLS_{original})}})$
@@ -294,9 +294,9 @@ reduction is also important when training a database with a GMM, since
 in high dimensions; GMM might not able to estimate the covariance
 matrix. Face training is summarized below.
 
-> (@7) $Train = \{train_{user1}, train_{user2}\}$
-> (@8) $Pt = PCA(train,number\ of\ eigenvector)$
-> (@9) $Gpt = GMM(pt,dimensions)$
+> (@train) $Train = \{train_{user1}, train_{user2}\}$
+> (@pca) $Pt = PCA(train,number\ of\ eigenvector)$
+> (@gmm) $Gpt = GMM(pt,dimensions)$
 
 The eigen faces from the PCA is shown in figure 7.
 
@@ -305,8 +305,8 @@ The eigen faces from the PCA is shown in figure 7.
 Having the GMM model for each database, one can then easily find the
 probability of each face given each model by calculating the log
 likelihood of the testing data that is projected to PCA space in
-equation 2.b, given the mean and the variance find in equation 2.c. This
-is shown in equation 3.
+(@pca), given the mean and the variance find in (@gmm). This
+is shown in (@10).
 
 > (@10) $f(test|\mu,\sigma) = \frac{1}{test\ \sigma\sqrt{w\pi}}e^\frac{ln(x-\mu)^2}{2\sigma^2}$
 
@@ -391,7 +391,7 @@ The samples per frame is computed as $\frac{\text{samples}}{\text{seconds}}
 \frac{\text{seconds}}{\text{frames}}$. Frame time serves as the base unit because
 frames are the base unit in the facial analysis, allowing for one-to-one comparisons.[^2]
 We then project the extracted features to a lower dimensional space using PCA.
-This procedure mirrors the technique described in section 3 for training the face databases.
+This procedure mirrors the technique described in section III for training the face databases.
 
 Voice Activity Detection (VAD)
 -----------------------------
@@ -465,7 +465,7 @@ Now that we have our VAD and speech classifiers, we can easily assign
 labels to every analysis frames, e.g. no speech, class 1, class 1, class
 2, etc. The labels then allow selecting which face rectangle is active, yielding
 the location of each user at each frame from section III results. We then 
-reconstruct spatial audio using the techniques explained in section 2.1.
+reconstruct spatial audio using the techniques explained in section II.1.
 
 Results
 =======
@@ -497,7 +497,7 @@ reverberation in the room.
 
 We use the same video with two speakers from last time, to perform
 multimodal speaker recognition. This enables the calculation of the 
-recognition probabilities in equation 2. Note however, we did not try to
+recognition probabilities in (@model). Note however, we did not try to
 estimate $w's$ from the environment. Rather, the values used range from $1$ to $10$ 
 for $w$’s, where $1$ put more focus on the face classifier and 10, more weight on the
 speech classifier. We then evaluate the $P(user)_{k=1}^K$ over all video
