@@ -336,7 +336,7 @@ be linearly separable in 2 dimensions.
 Face Tracking
 -------------
 
-Matlab’s face detection function draw a rectangle around the detected
+Matlab’s face detection function draws a rectangle around the detected
 faces. We extracted the coordinates for that rectangle and use the
 center of the rectangle as the position of the detected user. Such
 tracking algorithm usually does give good results due to face detection
@@ -431,7 +431,7 @@ We then project the extracted features to a lower dimensional space using PCA.
 This procedure mirrors the technique described in section 3 for training the face databases.
 
 The procedure for classifying speech is summarized in figure 12. The resulting
-classification results are shown in table 3 below.
+classification results are given in table 3.
 In additon, the corresponding LCS and MFCC features are shown for a 2 dimensional
 space in figure 11 for non-speech signals, class 1 and class 2 speech
 signals. Non-speech and speech classes are clearly separable; however,
@@ -612,6 +612,8 @@ s16c6lrx9tay065/AADZpsofFS4ANiRzpQA8fHPca?dl=0)
 
 [8] Paris Smaragdis. “Audio Demos.” Audio Demos - Sound Recognition for
 Content Analysis
+
+[9] "Multimodal Person Identification (Face Recognition, Person ID)." ECE 417/MP3. ECE 417 - Multimedia Signal Processing, Mar.-Apr. 2014.
 
 [^2]: The classification tool also supports averaging over a number of frames.
 
