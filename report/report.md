@@ -47,7 +47,7 @@ reconstruction and multimodal speaker recognition. And finally, in
 section VI, we suggest future possibilities for our project in other
 systems and applications.
 
-General Flow {#ssec:subhead}
+General Flow
 ============
 
 In this section, the basic procedure for reconstructing 3D audio and
@@ -93,13 +93,26 @@ speaker’s face.
 database.
 4. There are no sudden movements in the video stream.
 
-Note that the relaxing of these assumptions is discussed in discussed 
-in section VI. For training purposes, we recorded a video clip of two
+Note the relaxing of these assumptions is discussed in section VI.
+For training purposes, we recorded a video clip of two
 people sitting on left and right of a video frame having a conversation,
 as shown in figure 2. With the video, we demonstrate a calibration procedure
 detailed below.
 
-![Recording of two people having a conversation](faraz_marcell.jpg)
+\begin{figure}[htb]
+\begin{minipage}[b]{0.88\linewidth}
+\centering
+\centerline{\includegraphics[width=8.0cm]{faraz_marcell.jpg}}
+\centerline{}
+\centerline{\includegraphics[width=6.0cm]{part1.png}}
+\centerline{}
+\centerline{\includegraphics[width=6.0cm]{part4.png}}
+\centerline{}
+\centerline{\includegraphics[width=6.0cm]{part3.png}}
+\end{minipage}
+\caption{Recording of two people having a conversation followed by a depiction of 3D audio and speaker recognition}
+\label{fig:res}
+\end{figure}
 
 ## Calibration ##
 
@@ -118,11 +131,16 @@ the labels correspond to the order that speakers clapped.
 
 The procedure is summarized in figure 3.
 
+
 \begin{figure}[htb]
-\center{\includegraphics[width=4.0cm]{calibration.jpg}}
-\label{fig:res}
+\begin{minipage}[b]{0.98\linewidth}
+\centering
+\centerline{\includegraphics[width=9.0cm]{calib1.png}}
+\end{minipage}
 \caption{Calibration}
+\label{fig:res}
 \end{figure}
+\centerline{}
 
 After collecting a training database, the classifier 
 discussed in section III and IV is created.
@@ -153,21 +171,23 @@ corresponding face location.
 Speaker Recognition
 -------------------
 
-Consider the same video section 2.1. We would now like to augment
-the face classification using audio cues. In particular, in the absence
+Now let us consider speaker classification. Our goal is to augment
+the face classification using audio cues. Specifically, in the absence
 of a speaker, the recognition system should bias towards the
 facial classifier. Alternatively, if the speaker’s face cannot be
 detected, then the classification algorithm should bias towards speech
-classifier. To obtain this behavior we used the following model for the
+classifier. To obtain this behavior we used the following model[9] for the
 classification probability.
 
 (@model) $P(user) = P(face|model)^{W_i}P(face \ model) + \ldots \\P(speech|model)^{W_{max}-W_i}P(speech \ model)$
 
 While prior probabilities given in equation 2 are assumed to be equally
-probable, in practice for they should be estimated more carefully given
-the recording conditions and prior data. Steps 1 through 4 in *3D Audio
-Reconstruction* are also performed when doing speaker recognition. After 
-having a training database for faces and speech, we then do the following,
+probable, in practice they can/should be estimated based on
+prior data and the recording conditions.
+
+Steps 1 through 4 in *3D Audio Reconstruction* are also performed when doing
+speaker recognition. After obtaining the training databases for faces and speech,
+we do the following,
 
 ## Multimodal Speaker Recognition ##
 
@@ -222,6 +242,7 @@ summarized in figure 5.
 \begin{minipage}[b]{0.88\linewidth}
 \centering
 \centerline{\includegraphics[width=3.0cm]{face_detection.jpg}}
+\centerline{\includegraphics[width=5.0cm]{detect1.png}}
 \end{minipage}
 \caption{Face Detection}
 \label{fig:res}
