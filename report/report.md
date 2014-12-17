@@ -31,7 +31,7 @@ calibration and are not very accurate in real environments due to noise
 and reverberation. Most importantly, if a video was not recorded using
 microphone arrays or binaural microphones, it is too difficult, if not
 impossible, to recover spatial audio. That is why we purpose a method by
-using the contents in the video, the visual cues, to help reconstructing
+using the contents in the video, the visual cues, to help reconstruct
 3D audio.
 The other goal of this project is to perform multimodal speaker
 recognition using facial and speech likelihoods by first learning
@@ -112,7 +112,7 @@ The calibration procedure is as follows,
 Each user is asked to,
 
 1. Clap hands and wave to the camera.
-2. Speak for about a minutes while facing the camera.
+2. Speak for about a minute while facing the camera.
 
 This calibration procedure is repeated until another clap sound is
 detected, which means there is another user whose database needs to be
@@ -293,7 +293,7 @@ f(test|\mu,\sigma) = \frac{1}{test\ \sigma\sqrt{w\pi}}e^\frac{ln(x-\mu)^2}{2\sig
 \end{aligned}$$
 
 In figure 8, the scatter plot each class using the first two highest
-eigenvector from the PCA matrix is shown. As you can see the two classes
+eigenvector from the PCA matrix is shown. As you can see, the two classes
 are linearly separable, so we should be able to get high accuracy from
 our classifier.
 
@@ -375,7 +375,7 @@ Voice Activity Detection
 In order to have a good speech recognition system, we remove the
 non-speech components (silences) from the desired signal. This way the
 only signal that we have in our training database is speech. As
-mentioned earlier in section 2, the calibration procedure help labeling
+mentioned earlier in section 2, the calibration procedure helps label
 the speech signals, so we already know the approximate time interval in
 the signal for each user.
 
@@ -390,8 +390,8 @@ table 2.
 \hline
 Classifier & LSC & MFCC \\ \hline
 Linear SVM & $99.9\%$ & $99.9\%$ \\ \hline
-Gaussian Naive Bayes & $99.9\%$ & $ 99.9\%$ \\ \hline
-20-Nearest Neighbor & $99.9\%$ & $ 99.9\%$ \\ \hline
+Gaussian Naive Bayes & $99.9\%$ & $99.9\%$ \\ \hline
+20-Nearest Neighbor & $99.9\%$ & $99.9\%$ \\ \hline
 \end{tabular}
 \end{center}\centerline{Table 2: VAD Accuracy}
 \centerline{}
@@ -423,7 +423,7 @@ signals. As you can see non-speech and speech classes are linearly
 separable for LSC features and non-linearly separable for MFCC features.
 However, neither of the speech classes are separable in 2 dimensions for
 either features. We can only hope that using more PCA dimensions will
-help separating the two classes in higher dimensions.  The procedure for
+help separate the two classes in higher dimensions. The procedure for
 classifying speech is summarized in figure 12. The resulting
 classification results are shown in table 3 below. As you can see
 Ada-Boost has the highest classification accuracy among all.
@@ -434,8 +434,8 @@ Ada-Boost has the highest classification accuracy among all.
 Classifier & LSC & MFCC \\ \hline
 Linear SVM & $83.0\%$ & $85.3\%$ \\ \hline
 Gaussian Naive Bayes & $82.4\%$ & $80.2\%$ \\ \hline
-20-Nearest Neighbor & $84.9\%$ & $ 86.7\%$ \\ \hline
-Ada-Boost & $91.2\%$ & $ 90.3\%$ \\ \hline
+20-Nearest Neighbor & $84.9\%$ & $86.7\%$ \\ \hline
+Ada-Boost & $91.2\%$ & $90.3\%$ \\ \hline
 GMM & $83.5\%$ & $---$\\ \hline
 \end{tabular}
 \end{center}\centerline{Table 3: Voice Classification Accuracy}
@@ -449,7 +449,7 @@ GMM & $83.5\%$ & $---$\\ \hline
 \label{fig:res}
 \end{figure}
 
-![Speech Classification)](speech_class.jpg)
+![Speech Classification](speech_class.jpg)
 
 Now that we have our VAD and speech classifiers, we can easily assign
 labels to every analysis frames, e.g. no speech, class 1, class 1, class
@@ -515,7 +515,7 @@ FUTURE WORK
 ===========
 
 One of the assumptions made in section II was that speakers do not talk
-at the same time. One can the apply source separation techniques [7] on
+at the same time. One can then apply source separation techniques [7] on
 the input signals first based on the number of speakers in the room, and
 then follow the same procedure on section IV to classify each speaker
 into their corresponding classes while separating each source.
@@ -566,7 +566,7 @@ analyzing the speech signals.
 One last application that we can think of is to be able to perform
 supervised source separation. Since we already have a dictionary of
 Eigen faces and speeches for every user, we can simply scan the whole
-video frames and signals to extract ones face and speech by finding the
+video frames and signals to extract one's face and speech by finding the
 best match between the signals and the corresponding Eigen values. This
 idea of unconstrained source separation has already been extensively
 investigated on video content analysis and sound recognitions in [8].
