@@ -77,9 +77,10 @@ def gen_stats(data, training, test, n_speakers, is_voice, which_speaker):
     pca.fit(hstack(data).T)
     pca_data = map(compose(transpose, pca.transform, transpose), data)
 
-    for color, sp in zip(["red", "blue", "green"], pca_data):
-        scatter(sp[0], sp[1], color=color)
-        legend(["silence", "speaker1", "speaker2"], loc='lower left',)
+    for (color, marker), sp in zip([("red", "o"), ("blue", "x"),
+                                    ("green", "*")], pca_data):
+        scatter(sp[0], sp[1], color=color, marker=marker)
+        legend(["silence", "speaker1", "speaker2"], loc='upper left',)
         title("PCA 2 Components of MFCC")
     savefig("pca_2_comp_mfcc.svg")
     
