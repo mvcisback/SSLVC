@@ -82,7 +82,7 @@ one must first find the short time Fourier transform of the signal and
 then multiplied that by the desired zero-padded HRTF and take inverse
 STFT to recover the time domain signal back, as shown in figure 1.
 
-![3D Audio Reconstruction](3d.jpg)
+![3D Audio Reconstruction](imgs/3d.jpg)
 
 Here, we have made the following assumptions:[^4]
 
@@ -102,13 +102,13 @@ detailed below.
 \begin{figure}[htb]
 \begin{minipage}[b]{0.88\linewidth}
 \centering
-\centerline{\includegraphics[width=8.0cm]{faraz_marcell.jpg}}
+\centerline{\includegraphics[width=8.0cm]{imgs/faraz_marcell.jpg}}
 \centerline{}
-\centerline{\includegraphics[width=6.0cm]{part1.png}}
+\centerline{\includegraphics[width=6.0cm]{imgs/part1.png}}
 \centerline{}
-\centerline{\includegraphics[width=6.0cm]{part4.png}}
+\centerline{\includegraphics[width=6.0cm]{imgs/part4.png}}
 \centerline{}
-\centerline{\includegraphics[width=6.0cm]{part3.png}}
+\centerline{\includegraphics[width=6.0cm]{imgs/part3.png}}
 \end{minipage}
 \caption{Recording of two people having a conversation followed by a depiction of 3D audio and speaker recognition}
 \label{fig:res}
@@ -135,7 +135,7 @@ The procedure is summarized in figure 3.
 \begin{figure}[htb]
 \begin{minipage}[b]{0.98\linewidth}
 \centering
-\centerline{\includegraphics[width=9.0cm]{calib1.png}}
+\centerline{\includegraphics[width=9.0cm]{imgs/calib1.png}}
 \end{minipage}
 \caption{Calibration}
 \label{fig:res}
@@ -208,7 +208,7 @@ the signal, and put more weight on the speech classifier when the SNR is
 higher. With figure 4 summarizing the general flow of this project, we
 conclude section II.
 
-![Speaker Classification](project_598ps.jpg)
+![Speaker Classification](imgs/project_598ps.jpg)
 
 FACE DETECTION, CLASSIFICATION AND TRACKING
 ===========================================
@@ -241,8 +241,8 @@ summarized in figure 5.
 \begin{figure}[htb]
 \begin{minipage}[b]{0.88\linewidth}
 \centering
-\centerline{\includegraphics[width=3.0cm]{face_detection.jpg}}
-\centerline{\includegraphics[width=5.0cm]{detect1.png}}
+\centerline{\includegraphics[width=3.0cm]{imgs/face_detection.jpg}}
+\centerline{\includegraphics[width=5.0cm]{imgs/detect1.png}}
 \end{minipage}
 \caption{Face Detection}
 \label{fig:res}
@@ -274,9 +274,9 @@ shown in figure 6.
 
 \begin{figure}[htb]
 \begin{minipage}[b]{0.88\linewidth}
-\centerline{\includegraphics[width=5.60cm]{clap_motion.jpg}}
-\centerline{\includegraphics[width=6.60cm]{3d_audio_tracking_1.jpg}}
-\centerline{\includegraphics[width=3.0cm]{3d_audio_tracking_2.jpg}}
+\centerline{\includegraphics[width=5.60cm]{imgs/clap_motion.jpg}}
+\centerline{\includegraphics[width=6.60cm]{imgs/3d_audio_tracking_1.jpg}}
+\centerline{\includegraphics[width=3.0cm]{imgs/3d_audio_tracking_2.jpg}}
 \end{minipage}
 \caption{Frame subtraction and division into two partitions for labeling each class}
 \label{fig:res}
@@ -300,7 +300,7 @@ matrix. Face training is summarized below.
 
 The eigen faces from the PCA is shown in figure 7.
 
-![Eigen faces for class 1](eigen_face.jpg)
+![Eigen faces for class 1](imgs/eigen_face.jpg)
 
 Having the GMM model for each database, one can then easily find the
 probability of each face given each model by calculating the log
@@ -315,7 +315,7 @@ eigenvector from the PCA matrix is shown. As you can see, the two classes
 are linearly separable, so we should be able to get high accuracy from
 our classifier.
 
-![2 Dim PCA Face Features](scatter_face.jpg)
+![2 Dim PCA Face Features](imgs/scatter_face.jpg)
 
 We left $10\%$ of our training database for testing and trained the
 remaining $90\%$. The result of our facial classifier is tabulated
@@ -348,7 +348,7 @@ length). If the sources were stationary we can use a longer moving
 average for smoothing the results. The result of such process is shown
 in figure 9.
 
-![Tracking Results](tracking_results.jpg)
+![Tracking Results](imgs/tracking_results.jpg)
 
 The $x-axis$ corresponds to the time frame, and the $y-axis$ is the
 approximated $x-position$ of the detected face. We only look at things
@@ -369,7 +369,7 @@ The tracking result of the one unknown and one known user case shown
 in figure 6 is shown in figure 10.
 
 ![Tracking results for two users, one labeled, and one
-unknown](3d_audio_tracking_3.jpg)
+unknown](imgs/3d_audio_tracking_3.jpg)
 
 As you can see, each source is correctly detected at opposite edge of
 each video frame. The spikes in these graphs are mainly for two reasons,
@@ -458,14 +458,14 @@ GMM & $83.5\%$ & $---$\\ \hline
 
 \begin{figure}[htb]
 \begin{minipage}[b]{0.88\linewidth}
-\centerline{\includegraphics[width=6.6cm]{mfcc_2pca.png}}
-\centerline{\includegraphics[width=6.6cm]{spectral_log_2pca.png}}
+\centerline{\includegraphics[width=6.6cm]{imgs/mfcc_2pca.png}}
+\centerline{\includegraphics[width=6.6cm]{imgs/spectral_log_2pca.png}}
 \end{minipage}
 \caption{MFCC (top) and LSC features (bottom) for three classes}
 \label{fig:res}
 \end{figure}
 
-![Speech Classification](speech_class.jpg)
+![Speech Classification](imgs/speech_class.jpg)
 
 Now that we have our VAD and speech classifiers, we can easily assign
 labels to every analysis frames, e.g. no speech, class 1, class 1, class
