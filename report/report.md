@@ -40,7 +40,7 @@ different features from a training video using a user friendly
 calibration procedure discussed in this paper. In section II, we talk
 about the general flow of the algorithm for reconstructing 3D audio and
 speaker recognition algorithms. In section III, face detection,
-classification, and tracking are discussed in details. In section IV,
+classification, and tracking are discussed in detail. In section IV,
 voice activity detection (VAD) and speech classification algorithms are
 explained thoroughly. In section V, we go over the results for 3D audio
 reconstruction and multimodal speaker recognition. And finally, in
