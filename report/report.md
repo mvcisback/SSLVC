@@ -40,9 +40,9 @@ different features from a training video using a user friendly
 calibration procedure discussed in this paper. In section II, we talk
 about the general flow of the algorithm for reconstructing 3D audio and
 speaker recognition algorithms. In section III, face detection,
-classification, and tracking are discussed in detail. In section IV,
+classification, and tracking are discussed in detail. Then, in section IV,
 voice activity detection (VAD) and speech classification algorithms are
-explained thoroughly. In section V, we go over the results for 3D audio
+explained thoroughly. Next in section V, we shall go over the results for 3D audio
 reconstruction and multimodal speaker recognition. And finally, in
 section VI, we suggest future possibilities for our project in other
 systems and applications.
@@ -72,14 +72,14 @@ hrir = C_{(MLS_{recorded},MLS_{original})}(index-L:index+L)\\
 \end{gathered}
 \end{subequations}$$
 
-Where $L$ is half the impulse response desired length. This number is
+, where $L$ is half the impulse response desired length. This number is
 usually about 128 samples, but it can differ based on the recording
 room, e.g. such the early reflection sample index and $C_{xy}$
 represents the cross-correlation between $x$ and $y$. In this project we
 used MIT HRTF database for reconstructing spatial audio [4].
 
-In order to avoid clicking sounds when reconstructing 3D audio and also
-for simplicity, we did the reconstruction in frequency domain. In short,
+To avoid clicking sounds when reconstructing 3D audio and with the added 
+benefit of simplicity, we reconstruct the signal in frequency domain. In short,
 one must first find the short time Fourier transform of the signal and
 then multiplied that by the desired zero-padded HRTF and take inverse
 STFT to recover the time domain signal back, as shown in figure 1.
@@ -117,8 +117,8 @@ Each user is asked to,
 
 This calibration procedure is repeated until another clap sound is
 detected, which means there is another user whose database needs to be
-collected as well. This calibration procedure helps us particularly in
-labeling the training database. This is summarized in figure 3.
+collected as well. The calibration procedure then allows the
+labeling of data in the training database. This is summarized in figure 3.
 
 \begin{figure}[htb]
 \center{\includegraphics[width=4.0cm]{calibration.jpg}}
@@ -157,9 +157,9 @@ Speaker Recognition
 Consider the same video from section 2.1. We would like to be able to
 identify each user using their facial and speech features. If the
 speaker is not talking, then the recognition system should put more
-weight towards the facial classifier. If the speaker’s face cannot be
+weight towards the facial classifier. Next, if the speaker’s face cannot be
 detected, then the classification algorithm only uses the speech
-classifier. If both face and speech are available, then the
+classifier. Finally, if both face and speech are available, then the
 classification algorithm will use both with some weighting on each model
 to determine and identify each user for maximizing the user recognition
 likelihood given the training database.
@@ -345,7 +345,7 @@ in the azimuth, since the 3D audio does not sound very good for
 elevation angles.
 
 In general, for recreating sptial audio for $n$ people, we need at least
-$n-1$ training databases. As discussed in section 2.1 we assumed that we
+$n-1$ training databases. Recall in section 2.1 we assumed that we
 only have up to 2 users in a video frame. Therefore, if we have the
 training dataset for one of the users, we can classify one in the
 databse with a lable and define a threshold for the other user; so we
@@ -400,7 +400,7 @@ Gaussian Naive Bayes & $99.9\%$ & $99.9\%$ \\ \hline
 \end{center}\centerline{Table 2: VAD Accuracy}
 \centerline{}
 
-As you can see the results from each classifier is near perfect. 
+Here the results from each classifier are nearly perfect. 
 This is perhaps expected given the clear linear separability in
 figure 11. In fact, on inspection, the primary feature is unsurprisingly
 dominated by the energy level. 
@@ -408,7 +408,7 @@ dominated by the energy level.
 Ultimately, we selected linear SVM for further processing, due
 to its simplicity and speed. After removing non-speech components from the signal, 
 we create a database of each user’s speech using the calibration procedure mentioned
-in section 2.1. The system then trains each database separately like in a similar 
+in section 2.1. The system then trains each database separately in the same 
 manner described for faces in section III.
 
 Voice Classification
@@ -418,10 +418,10 @@ Voice Classification
 training speech models for each class. The STFT of the signal uses
 non-overlaping rectangular windows as long corresponding to one frame.
 The samples per frame is computed as $\frac{\text{samples}}{\text{seconds}}
-\frac{\text{seconds}}{\text{frames}}$. The unit of frame time is used because
-frames serves as the base unit in the facial analysis.[^2]  We then project the extracted
-features to a lower dimensional space using PCA. This procedure mirrors the technique
-described in section 3 for training the face databases.
+\frac{\text{seconds}}{\text{frames}}$. Frame time serves as the base unit because
+frames are the base unit in the facial analysis, allowing for one-to-one comparisons.[^2]
+We then project the extracted features to a lower dimensional space using PCA.
+This procedure mirrors the technique described in section 3 for training the face databases.
 
 The procedure for classifying speech is summarized in figure 12. The resulting
 classification results are shown in table 3 below.
@@ -430,8 +430,8 @@ space in figure 11 for non-speech signals, class 1 and class 2 speech
 signals. Non-speech and speech classes are clearly separable; however,
 the seperability of th speech classes remains suspect. Nevertheless, 
 given the empirical success of the classifiers, the speech classes appear
-to be seperable in higher dimensions. As you can see Ada-Boost has the highest
-classification accuracy among all. Our suspicion is that the other classifiers
+to be seperable in higher dimensions. Note that in our tests Ada-Boost had the highest
+classification accuracy. Our suspicion is that the other classifiers
 make Gaussian assumptions either explictly or implicitly in the euclidean distance
 measures. Ada Boost avoids this fate by using a collection of classifiers, that
 while potentially making individual Gaussian assumptions, are not necessarily Gaussian 
@@ -495,10 +495,10 @@ toward the desired sound source and undo artifacts such as noise and
 reverberation in the room.
 
 We use the same video with two speakers from last time, to perform
-multimodal speaker recognition. We can calculate the recognition of each
-speaker using equation 2. We, however, did not try to estimate $w's$
-from the environment. We used values from $1$ to $10$ for $w$’s, where
-$1$ put more focus on the face classifier and 10, more weight on the
+multimodal speaker recognition. This enables the calculation of the 
+recognition probabilities in equation 2. Note however, we did not try to
+estimate $w's$ from the environment. Rather, the values used range from $1$ to $10$ 
+for $w$’s, where $1$ put more focus on the face classifier and 10, more weight on the
 speech classifier. We then evaluate the $P(user)_{k=1}^K$ over all video
 frames for all 10 values of $w$. We can then create a matrix of
 likelihoods as the one shown below.
@@ -515,7 +515,7 @@ at most frames, that is,
 
 > $\begin{aligned}w_{max} = argmax_w(P(user)_{k=1}^K \&_ {w=1}^{10})\end{aligned}$
 
-Where $K$ is the number of frames. For our video, it turned out that the
+, where $K$ is the number of frames. For our video, it turned out that the
 value of $w$ is $4$. This means that the multimodal classifier is
 putting more weight on the face classifier. This makes sense since the
 face classifier was able to achieve higher accuracy than the speech
