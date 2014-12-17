@@ -37,14 +37,14 @@ using the contents in the video, the visual cues, to help reconstruct
 The other goal of this project is to perform multimodal speaker
 recognition using facial and speech likelihoods by first learning
 different features from a training video using a user friendly
-calibration procedure discussed in this paper. In section II, we talk
+calibration procedure discussed in this paper. In section 2, we talk
 about the general flow of the algorithm for reconstructing 3D audio and
-speaker recognition algorithms. In section III, face detection,
-classification, and tracking are discussed in detail. Then, in section IV,
+speaker recognition algorithms. In section 3, face detection,
+classification, and tracking are discussed in detail. Then, in section 4,
 voice activity detection (VAD) and speech classification algorithms are
-explained thoroughly. Next in section V, we shall go over the results for 3D audio
+explained thoroughly. Next in section 5, we shall go over the results for 3D audio
 reconstruction and multimodal speaker recognition. And finally, in
-section VI, we suggest future possibilities for our project in other
+section 4, we suggest future possibilities for our project in other
 systems and applications.
 
 General Flow
@@ -93,7 +93,7 @@ speaker’s face.
 database.
 4. There are no sudden movements in the video stream.
 
-Note the relaxing of these assumptions is discussed in section VI.
+Note the relaxing of these assumptions is discussed in section 4.
 For training purposes, we recorded a video clip of two
 people sitting on left and right of a video frame having a conversation,
 as shown in figure 2. With the video, we demonstrate a calibration procedure
@@ -143,7 +143,7 @@ The procedure is summarized in figure 3.
 \centerline{}
 
 After collecting a training database, the classifier 
-discussed in section III and IV is created.
+discussed in section 3 and 4 is created.
 
 3D Audio Reconstruction
 -----------------------
@@ -206,7 +206,7 @@ or just the fact that the face classifier works better than the speech
 classifier. As an example, one way of choosing $w$ is measure the SNR of
 the signal, and put more weight on the speech classifier when the SNR is
 higher. With figure 4 summarizing the general flow of this project, we
-conclude section II.
+conclude section 2.
 
 ![Speaker Classification](imgs/project_598ps.jpg)
 
@@ -250,7 +250,7 @@ summarized in figure 5.
 
 Note that if there is more than one user in the room, we need to be able
 to identify the approximate location of each so we can label them. This
-is why we defined the calibration procedure in section II. We first
+is why we defined the calibration procedure in section 2. We first
 attempted to find this location by detecting mouth movement, however,
 due to resizing; the resolution was not high enough to detect lips
 movement. For simplicity, we ask our users to clap and wave to the
@@ -391,7 +391,7 @@ The samples per frame is computed as $\frac{\text{samples}}{\text{seconds}}
 \frac{\text{seconds}}{\text{frames}}$. Frame time serves as the base unit because
 frames are the base unit in the facial analysis, allowing for one-to-one comparisons.[^2]
 We then project the extracted features to a lower dimensional space using PCA.
-This procedure mirrors the technique described in section III for training the face databases.
+This procedure mirrors the technique described in section 3 for training the face databases.
 
 Voice Activity Detection (VAD)
 -----------------------------
@@ -464,8 +464,8 @@ GMM & $83.5\%$ & $---$\\ \hline
 Now that we have our VAD and speech classifiers, we can easily assign
 labels to every analysis frames, e.g. no speech, class 1, class 1, class
 2, etc. The labels then allow selecting which face rectangle is active, yielding
-the location of each user at each frame from section III results. We then 
-reconstruct spatial audio using the techniques explained in section II.1.
+the location of each user at each frame from section 3 results. We then 
+reconstruct spatial audio using the techniques explained in section 2.1.
 
 Results
 =======
@@ -479,11 +479,11 @@ resulting video named *gobble\_cs598.mp4* can be found in [6]. For
  the second video, we recorded two speakers speaking, a snapshot was
  provided earlier in figure 2. We trained both
 speakers’ facial and speech features beforehand as was discussed earlier
-in section III and IV and use that to find the face location. At every
+in section 3 and 4 and use that to find the face location. At every
 frame we detect and capture both speech and faces. Note that given our
 face model we already know where speakers are located at, so we simply
 classify each audio frame to one of three classes discussed in section
-IV. We can then create a spatial sound for the two users.
+4. We can then create a spatial sound for the two users.
 
 In general we were able to recreate a sound that was guided by speaker’s
 faces. We also included some example video clips where a piece of music
@@ -525,10 +525,10 @@ classifier.
 FUTURE WORK
 ===========
 
-One of the assumptions made in section II was that speakers do not talk
+One of the assumptions made in section 2 was that speakers do not talk
 at the same time. One can then apply source separation techniques [7] on
 the input signals first based on the number of speakers in the room, and
-then follow the same procedure on section IV to classify each speaker
+then follow the same procedure on section 4 to classify each speaker
 into their corresponding classes while separating each source.
 
 Another future enhancement is the ability to spatialize sounds other
@@ -546,8 +546,8 @@ One can also use this project and apply it to teleconferencing
 applications as well. If you have a room full of stationary speakers,
 you can easily learn their facial and speech features by recording one
 of the sessions. One can then use the tracking procedure discussed in
-section III to locate each speaker and use the techniques explained in
-section IV to label the signal as well. That way if the conference room
+section 3 to locate each speaker and use the techniques explained in
+section 4 to label the signal as well. That way if the conference room
 is equipped with microphone arrays, one can use this information to form
 the beam at the current speaker to enhance speech intelligibility. Note
 that in teleconferencing, we need to be able to do this in real time.
