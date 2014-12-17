@@ -33,6 +33,7 @@ microphone arrays or binaural microphones, it is too difficult, if not
 impossible, to recover spatial audio. That is why we purpose a method by
 using the contents in the video, the visual cues, to help reconstruct
 3D audio.
+
 The other goal of this project is to perform multimodal speaker
 recognition using facial and speech likelihoods by first learning
 different features from a training video using a user friendly
@@ -372,18 +373,15 @@ VOICE ACTIVITY DETECTION AND CLASSIFICATION
 Voice Activity Detection
 ------------------------
 
-In order to have a good speech recognition system, we remove the
-non-speech components (silences) from the desired signal. This way the
-only signal that we have in our training database is speech. As
-mentioned earlier in section 2, the calibration procedure helps label
-the speech signals, so we already know the approximate time interval in
-the signal for each user.
+Voice activity detection enables the filtering of non-speech components 
+(usually silence) from speech components. As mentioned in section 2, the
+calibration procedure labels the speech signals.
 
-In order to do VAD, we developed a supervised method by training speech
-and non-speech signals. We used log spectral coefficients (LSC) and Mel
-frequency cepstral coefficients (MFCC) as speech features. The
-classification results for four different classifiers are listed in
-table 2.
+In order to do VAD, we developed a supervised method by training speech 
+signals (the signals between claps) and non-speech signals (the signals before 
+the first clap). The VAD classification results for four different classifiers 
+using Log Spectral Coefficients (LSC) or Mel Frequency Cepstral Coefficients
+(MFCC) are listed in table 2.
 
 \begin{center}
 \begin{tabular}{ | l|c | r| }
@@ -396,37 +394,42 @@ Gaussian Naive Bayes & $99.9\%$ & $99.9\%$ \\ \hline
 \end{center}\centerline{Table 2: VAD Accuracy}
 \centerline{}
 
-As you can see the results from each classifier is near perfect. We
-chose linear SVM for further processing, due to its simplicity.
-After removing non-speech components from the signal, we create a
-database of each user’s speech using the calibration procedure mentioned
-in section 2.1. We now train each database separately like we did for
-faces in section III.
+As you can see the results from each classifier is near perfect. 
+This is perhaps expected given the clear linear separability in
+figure 11. In fact, on inspection, the primary feature is unsurprisingly
+dominated by the energy level. 
+
+Ultimately, we selected linear SVM for further processing, due
+to its simplicity and speed. After removing non-speech components from the signal, 
+we create a database of each user’s speech using the calibration procedure mentioned
+in section 2.1. The system then trains each database separately like in a similar 
+manner described for faces in section III.
 
 Voice Classification
 --------------------
 
 10% of the data was separated for testing and the remaining 90% for
-training speech models for each class. When taking the STFT of the
-signal, we use frame analysis that are as long as the camera recorder
-frame rate per second (25 fps in our case), with no overlap, using
-rectangular windows. This is because we would like to be able assign the
-face location to easily assign each speech frame. We also tried
-averaging over a number of frames to speed up the process.
-After extracting LSC and MFCC features from each class, we project them
-to a lower dimensional space using PCA, as we did when training a face
-database for each user in section 3.
+training speech models for each class. The STFT of the signal uses
+non-overlaping rectangular windows as long corresponding to one frame.
+The samples per frame is computed as $\frac{\text{samples}}{\text{seconds}}
+\frac{\text{seconds}}{\text{frames}}$. The unit of frame time is used because
+frames serves as the base unit in the facial analysis.[^2]  We then project the extracted
+features to a lower dimensional space using PCA. This procedure mirrors the technique
+described in section 3 for training the face databases.
 
-The corresponding LCS and MFCC features are shown for a 2 dimensional
+The procedure for classifying speech is summarized in figure 12. The resulting
+classification results are shown in table 3 below.
+In additon, the corresponding LCS and MFCC features are shown for a 2 dimensional
 space in figure 11 for non-speech signals, class 1 and class 2 speech
-signals. As you can see non-speech and speech classes are linearly
-separable for LSC features and non-linearly separable for MFCC features.
-However, neither of the speech classes are separable in 2 dimensions for
-either features. We can only hope that using more PCA dimensions will
-help separate the two classes in higher dimensions. The procedure for
-classifying speech is summarized in figure 12. The resulting
-classification results are shown in table 3 below. As you can see
-Ada-Boost has the highest classification accuracy among all.
+signals. Non-speech and speech classes are clearly separable; however,
+the seperability of th speech classes remains suspect. Nevertheless, 
+given the empirical success of the classifiers, the speech classes appear
+to be seperable in higher dimensions. As you can see Ada-Boost has the highest
+classification accuracy among all. Our suspicion is that the other classifiers
+make Gaussian assumptions either explictly or implicitly in the euclidean distance
+measures. Ada Boost avoids this fate by using a collection of classifiers, that
+while potentially making individual Gaussian assumptions, are not necessarily Gaussian 
+distributed themselves.
 
 \begin{center}
 \begin{tabular}{ | l|c | r| }
@@ -453,9 +456,9 @@ GMM & $83.5\%$ & $---$\\ \hline
 
 Now that we have our VAD and speech classifiers, we can easily assign
 labels to every analysis frames, e.g. no speech, class 1, class 1, class
-2, etc. Given these labels, we can then find the location of each user
-at each frame from section III results and then reconstruct spatial
-audio using the techniques explained in section 2.1.
+2, etc. The labels then allow selecting which face rectangle is active, yielding
+the location of each user at each frame from section III results. We then 
+reconstruct spatial audio using the techniques explained in section 2.1.
 
 Results
 =======
@@ -596,3 +599,4 @@ s16c6lrx9tay065/AADZpsofFS4ANiRzpQA8fHPca?dl=0)
 [8] Paris Smaragdis. “Audio Demos.” Audio Demos - Sound Recognition for
 Content Analysis
 
+[^2]: The classification tool also supports averaging over a number of frames.
