@@ -13,7 +13,7 @@ dept2: $^{*}$Dept. of Computer Science
 dept3: $^{\ddag}$Dept. of Physics
 ---
 
-Introduction {#sec:intro}
+Introduction
 ============
 
 Spatial audio and speaker classifications both have important
@@ -30,7 +30,7 @@ direction using microphone arrays [3]. These techniques require precise
 calibration and are not very accurate in real environments due to noise
 and reverberation. Most importantly, if a video was not recorded using
 microphone arrays or binaural microphones, it is too difficult, if not
-impossible, to recover spatial audio. That is why we purpose a method by
+impossible, to recover spatial audio. That is why we propose a method by
 using the contents in the video, the visual cues, to help reconstruct
 3D audio.
 
@@ -56,21 +56,19 @@ multimodal speaker recognition are discussed.
 3D Audio Reconstruction
 -----------------------
 
-One can reconstruct a 3D audio by simply convolving a mono sound with
+One can reconstruct the 3D audio by convolving a mono sound with
 the spatial response corresponding to a desired location in space. These
 impulse responses can be captured by recording a maximum length sequence
 (MLS) at listener’s ears at different angles. We can then extract
 corresponding impulse responses by cross-correlating the recorded MLS
 with the original MLS as shown in equation 1. These spatial responses
-are also called head Related Impulse Response (hrir).
+are also called Head Related Impulse Response (hrir).
 
-$$\begin{subequations}
-\begin{gathered}
-index = argmax({C_{(MLS_{recorded},MLS_{original})}})\\
-hrir = C_{(MLS_{recorded},MLS_{original})}(index-L:index+L)\\
-3D_{audio} = signal_{mono} * hrir
-\end{gathered}
-\end{subequations}$$
+> (@1) $index = argmax({C_{(MLS_{recorded},MLS_{original})}})$
+>
+> (@2) $hrir_i = C_{(MLS_{recorded},MLS_{original})}(i-L:i+L)$
+>
+> (@3) $3D_{audio} = signal_{mono} * hrir$
 
 , where $L$ is half the impulse response desired length. This number is
 usually about 128 samples, but it can differ based on the recording
@@ -86,8 +84,7 @@ STFT to recover the time domain signal back, as shown in figure 1.
 
 ![3D Audio Reconstruction](3d.jpg)
 
-We made a few assumptions to make this project doable in our limited
-timeline.
+Here, we have made the following assumptions:[^4]
 
 1. This algorithm is only able to spatialize speech based on a
 speaker’s face.
@@ -96,13 +93,11 @@ speaker’s face.
 database.
 4. There are no sudden movements in the video stream.
 
-Most of this assumption can be relaxed even further, some which are
-discussed in section VI. For simplicity, we used the following video
-clip for testing our applications.
-We recorded a video clip of two people sitting on left and right of a
-video frame having a conversation, as shown in figure 2. We also purpose
-a calibration procedure that require some user interference for training
-facial and speech database from each user.
+Note that the relaxing of these assumptions is discussed in discussed 
+in section VI. For training purposes, we recorded a video clip of two
+people sitting on left and right of a video frame having a conversation,
+as shown in figure 2. With the video, we demonstrate a calibration procedure
+detailed below.
 
 ![Recording of two people having a conversation](faraz_marcell.jpg)
 
@@ -110,15 +105,18 @@ facial and speech database from each user.
 
 The calibration procedure is as follows,
 
-Each user is asked to,
+There is a required "silence" period for calibrating the Voice 
+Activity Detection discussed later.
+
+Then each user is asked in turn to,
 
 1. Clap hands and wave to the camera.
 2. Speak for about a minute while facing the camera.
 
-This calibration procedure is repeated until another clap sound is
-detected, which means there is another user whose database needs to be
-collected as well. The calibration procedure then allows the
-labeling of data in the training database. This is summarized in figure 3.
+This is repeated until all users have spoken. Note then, that
+the labels correspond to the order that speakers clapped.
+
+The procedure is summarized in figure 3.
 
 \begin{figure}[htb]
 \center{\includegraphics[width=4.0cm]{calibration.jpg}}
@@ -126,11 +124,12 @@ labeling of data in the training database. This is summarized in figure 3.
 \caption{Calibration}
 \end{figure}
 
-After collecting a training database, we proceed making classifier which
-is discussed in more details in section III and IV.
-The procedure for reconstructing a 3D audio is as follows,
+After collecting a training database, the classifier 
+discussed in section III and IV is created.
 
 ## 3D Audio Reconstruction ##
+
+The procedure for reconstructing a 3D audio is as follows:
 
 1. Detect faces in the video stream for each frame and classify them to
 one in the database.
@@ -154,27 +153,21 @@ corresponding face location.
 Speaker Recognition
 -------------------
 
-Consider the same video from section 2.1. We would like to be able to
-identify each user using their facial and speech features. If the
-speaker is not talking, then the recognition system should put more
-weight towards the facial classifier. Next, if the speaker’s face cannot be
-detected, then the classification algorithm only uses the speech
-classifier. Finally, if both face and speech are available, then the
-classification algorithm will use both with some weighting on each model
-to determine and identify each user for maximizing the user recognition
-likelihood given the training database.
+Consider the same video section 2.1. We would now like to augment
+the face classification using audio cues. In particular, in the absence
+of a speaker, the recognition system should bias towards the
+facial classifier. Alternatively, if the speaker’s face cannot be
+detected, then the classification algorithm should bias towards speech
+classifier. To obtain this behavior we used the following model for the
+classification probability.
 
-$$\begin{aligned}
-P(user) = P(face|model)^{W_i}P(face \ model)+...\\P(speech|model)^{W_{max}-W_i}P(speech \ model)
-\ \ \ \ \ \ \ \ \ \ \ \ \ (2)\end{aligned}$$
+(@model) $P(user) = P(face|model)^{W_i}P(face \ model) + \ldots \\P(speech|model)^{W_{max}-W_i}P(speech \ model)$
 
-The prior probabilities in equation 2 are assumed to be equally
-probable, however, in practice for better accuracy they need to be
-estimated more carefully given the environment and the recording
-equipment.
-Steps 1 through 4 in *3D Audio Reconstruction* are also
-performed when doing speaker recognition. After having a training
-database for faces and speech, we then do the following,
+While prior probabilities given in equation 2 are assumed to be equally
+probable, in practice for they should be estimated more carefully given
+the recording conditions and prior data. Steps 1 through 4 in *3D Audio
+Reconstruction* are also performed when doing speaker recognition. After 
+having a training database for faces and speech, we then do the following,
 
 ## Multimodal Speaker Recognition ##
 
@@ -246,9 +239,9 @@ higher variance. The clap sound detection from previous section will
 tell us the approximate frame number for the clap motion in the video,
 so the area of search is only a few frames.
 
-$$\begin{gathered}
-sub_{frame} = (frame_i - mean(frame_{1:i-1}))^2 \\ 
-[i_{max}, j_{max}] = max(sub_{i=1:n,j=1:m})\end{gathered}$$
+> (@5) $sub_{frame} = (frame_i - mean(frame_{1:i-1}))^2$
+>
+> (@6) $[i_{max}, j_{max}] = max(sub_{i=1:n,j=1:m})$
 
 Where $n$ and $m$ are the number of pixels in the vertical and
 horizontal axis. We don’t care for the exact position of those high
@@ -280,10 +273,9 @@ reduction is also important when training a database with a GMM, since
 in high dimensions; GMM might not able to estimate the covariance
 matrix. Face training is summarized below.
 
-$$\begin{gathered}
-Train = \{train_{user1}, train_{user2}\} \\ 
-Pt = PCA(train,number\ of\ eigenvector) \\ 
-Gpt = GMM(pt,dimensions)\end{gathered}$$
+> (@7) $Train = \{train_{user1}, train_{user2}\}$
+> (@8) $Pt = PCA(train,number\ of\ eigenvector)$
+> (@9) $Gpt = GMM(pt,dimensions)$
 
 The eigen faces from the PCA is shown in figure 7.
 
@@ -295,9 +287,7 @@ likelihood of the testing data that is projected to PCA space in
 equation 2.b, given the mean and the variance find in equation 2.c. This
 is shown in equation 3.
 
-$$\begin{aligned}
-f(test|\mu,\sigma) = \frac{1}{test\ \sigma\sqrt{w\pi}}e^\frac{ln(x-\mu)^2}{2\sigma^2}
-\end{aligned}$$
+> (@10) $f(test|\mu,\sigma) = \frac{1}{test\ \sigma\sqrt{w\pi}}e^\frac{ln(x-\mu)^2}{2\sigma^2}$
 
 In figure 8, the scatter plot each class using the first two highest
 eigenvector from the PCA matrix is shown. As you can see, the two classes
@@ -331,7 +321,7 @@ center of the rectangle as the position of the detected user. Such
 tracking algorithm usually does give good results due to face detection
 inaccuracy. Since we do not need to know the exact position of the user
 at each frame, we can compensate for this flaw by applying moving
-average to the tracking results as well as fitting a polynomial to it
+average to the tracking results as well as fitting a polynomial[^3] to it
 (in this case a polynomial of order 10 and moving average of 25 frames
 length). If the sources were stationary we can use a longer moving
 average for smoothing the results. The result of such process is shown
@@ -344,7 +334,7 @@ approximated $x-position$ of the detected face. We only look at things
 in the azimuth, since the 3D audio does not sound very good for
 elevation angles.
 
-In general, for recreating sptial audio for $n$ people, we need at least
+In general, for recreating spatial audio for $n$ people, one requires at least
 $n-1$ training databases. Recall in section 2.1 we assumed that we
 only have up to 2 users in a video frame. Therefore, if we have the
 training dataset for one of the users, we can classify one in the
@@ -352,14 +342,10 @@ databse with a lable and define a threshold for the other user; so we
 can label him/her as unknown class. This threshold is defined as
 following,
 
-$$\begin{aligned}
-if \ P(face|model)<TH \\
-then\ \ \ 
-Face_{label} : unknown
-\end{aligned}$$
+(@11) $P(face|model)<TH$ $\implies Face_{label} : unknown$
 
-The tracking result of having one unknown and one known user in a frame
-video shown in figure 6 is shown in figure 10.
+The tracking result of the one unknown and one known user case shown
+in figure 6 is shown in figure 10.
 
 ![Tracking results for two users, one labeled, and one
 unknown](3d_audio_tracking_3.jpg)
@@ -503,7 +489,7 @@ speech classifier. We then evaluate the $P(user)_{k=1}^K$ over all video
 frames for all 10 values of $w$. We can then create a matrix of
 likelihoods as the one shown below.
 
-> $\begin{aligned}
+> (@12) $\begin{aligned}
 > P(user) = \begin{bmatrix}
 > p_{1,1}&\dots& p{1,10}\\
 > \vdots &\ddots &\vdots\\
@@ -513,7 +499,7 @@ likelihoods as the one shown below.
 We then look for a value of $w$ that maximizes the user classification
 at most frames, that is,
 
-> $\begin{aligned}w_{max} = argmax_w(P(user)_{k=1}^K \&_ {w=1}^{10})\end{aligned}$
+> (@13) $w_{max} = argmax_w(P(user)_{k=1}^K \&_ {w=1}^{10})$
 
 , where $K$ is the number of frames. For our video, it turned out that the
 value of $w$ is $4$. This means that the multimodal classifier is
@@ -607,3 +593,7 @@ s16c6lrx9tay065/AADZpsofFS4ANiRzpQA8fHPca?dl=0)
 Content Analysis
 
 [^2]: The classification tool also supports averaging over a number of frames.
+
+[^3]: Functionally equivalent to a low pass filter
+
+[^4]: Mostly to keep the project tractable given the timeframe

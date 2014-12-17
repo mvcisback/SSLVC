@@ -1,23 +1,24 @@
-\documentclass[conference]{IEEEtran}
+\documentclass{article}
+\usepackage{spconf}
 \usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{amssymb}
+\usepackage{amsmath}
 \makeatletter
 \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
 \def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
-\makeatother
 \setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
-\usepackage{amssymb}
-\usepackage[cmex10]{amsmath}
-\interdisplaylinepenalty=2500
-\usepackage{array}
-\usepackage{hyperref}
+\makeatother
 \usepackage{listings}
+\usepackage{color}
+\usepackage{pxfonts}
+\usepackage[]{mcode}
 \begin{document}
 
-\title{\large $title$}
+\title{$title$}
 
-\author{
-  \IEEEauthorblockN{$authors$}
-  \IEEEauthorblockA{$university$\\$dept1$\\$dept2$\\$dept3$}}
+\name{$authors$}
+\address{$university$\\$dept1$\\$dept2$\\$dept3$}
 \maketitle
 
 \begin{abstract}
@@ -29,9 +30,6 @@
 $keywords$
 \end{keywords}
 
-\IEEEpeerreviewmaketitle
-
 $body$
 
-% that's all folks
 \end{document}
