@@ -390,8 +390,11 @@ The following are details concerning the procedure used for voice classification
 When developing our models, 10% of the data was separated for testing and the
 remaining 90% for training each class. The STFT of the signal uses
 non-overlaping rectangular windows as long corresponding to one frame.
-The samples per frame is computed as $\frac{\text{samples}}{\text{seconds}}
-\frac{\text{seconds}}{\text{frames}}$. Frame time serves as the base unit because
+The window size is computed as:
+
+> (@fps) window_size $= \frac{\text{samples}}{\text{seconds}} \cdot \frac{\text{seconds}}{\text{frames}} \cdot (\text{1 frame})$
+
+Frame time serves as the base unit because
 frames are the base unit in the facial analysis, allowing for one-to-one comparisons.[^2]
 We then project the extracted features to a lower dimensional space using PCA.
 This procedure mirrors the technique described in section 3 for training the face databases.
