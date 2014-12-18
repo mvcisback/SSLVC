@@ -131,7 +131,6 @@ the labels correspond to the order that speakers clapped.
 
 The procedure is summarized in figure 3.
 
-
 \begin{figure}[htb]
 \begin{minipage}[b]{0.98\linewidth}
 \centering
@@ -142,13 +141,17 @@ The procedure is summarized in figure 3.
 \end{figure}
 \centerline{}
 
+The system will require recalibration if/when the lighting
+and the background sound is different for both 3D audio
+reconstruction and speaker recognition.
+
 After collecting a training database, the classifier 
 discussed in section 3 and 4 is created.
 
 3D Audio Reconstruction
 -----------------------
 
-The procedure for reconstructing a 3D audio is as follows:
+The procedure for reconstructing 3D audio is as follows:
 
 1. Detect faces in the video stream for each frame and classify them to
 one in the database.
@@ -268,7 +271,7 @@ Where $n$ and $m$ are the number of pixels in the vertical and
 horizontal axis. We don’t care for the exact position of those high
 variant pixels, we only need an approximation of which part of the frame
 that specific user is located at, e.g. left, right, up, down. The
-resulting pictures for frame subtraction, division and face detection is
+resulting pictures for frame subtraction, division and face detection are
 shown in figure 6.
 
 
@@ -506,9 +509,9 @@ likelihoods as the one shown below.
 
 > (@12) $\begin{aligned}
 > P(user) = \begin{bmatrix}
-> p_{1,1}&\dots& p{1,10}\\
+> p_{1,1}&\dots& p_{1,w_{\text{max}}}\\
 > \vdots &\ddots &\vdots\\
-> p_{k,1}&\dots&p(k,10)
+> p_{k,1}&\dots&p_{k,w_{\text{max}}}
 > \end{bmatrix}\end{aligned}$
 
 We then look for a value of $w$ that maximizes the user classification
@@ -581,33 +584,6 @@ video frames and signals to extract one's face and speech by finding the
 best match between the signals and the corresponding Eigen values. This
 idea of unconstrained source separation has already been extensively
 investigated on video content analysis and sound recognitions in [8].
-
-REFERENCE
-=========
-
-[1] Choueiri, E , Optimal Crosstalk Cancellation for Binaural Audio with
-Two Loudspeakers , Princeton University
-
-[2] Binaural Recording. Wiki 100k. Princeton University.
-
-[3] Friedman, Michael. “Capturing spatial audio from arbitrary
-microphone arrays for binaural reproduction.” (2014).
-
-[4] Gardner, Bill. “HRTF Measurements of a KEMAR Dummy-Head Microphone.”
-HRTF Measurements of a KEMAR Dummy-Head Microphone.
-
-[5] “Documentation.” Face Detection and Tracking Using CAMShift. Web. 14
-Dec. 2014.
-
-[6] Recorded Videos. (https://www.dropbox.com/sh/
-s16c6lrx9tay065/AADZpsofFS4ANiRzpQA8fHPca?dl=0)
-
-[7] Bryan, Nick J. “ISSE.” Nick (Nicholas) J. Bryan. Stanford.
-
-[8] Paris Smaragdis. “Audio Demos.” Audio Demos - Sound Recognition for
-Content Analysis
-
-[9] "Multimodal Person Identification (Face Recognition, Person ID)." ECE 417/MP3. ECE 417 - Multimedia Signal Processing, Mar.-Apr. 2014.
 
 [^2]: The classification tool also supports averaging over a number of frames.
 
