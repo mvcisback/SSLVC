@@ -119,9 +119,7 @@ detailed below.
 The calibration procedure is as follows,
 
 First there is a required silence period for calibrating the Voice 
-Activity Detection discussed later.
-
-Then each user is asked in turn to:
+Activity Detection discussed later. Then each user is asked in turn to:
 
 1. Clap hands and wave to the camera.
 2. Speak for about a minute while facing the camera.
@@ -389,13 +387,13 @@ VOICE ACTIVITY DETECTION AND CLASSIFICATION
 The following are details concerning the procedure used for voice classification.
 When developing our models, 10% of the data was separated for testing and the
 remaining 90% for training each class. The STFT of the signal uses
-non-overlaping rectangular windows as long corresponding to one frame.
+non-overlaping rectangular windows corresponding to one frame.
 The window size is computed as:
 
 > (@fps) window_size $= \frac{\text{samples}}{\text{seconds}} \cdot \frac{\text{seconds}}{\text{frames}} \cdot (\text{1 frame})$
 
-Frame time serves as the base unit because
-frames are the base unit in the facial analysis, allowing for one-to-one comparisons.[^2]
+Frames serve as the base unit here because they are the base unit in the facial analysis, 
+allowing for one-to-one comparisons.[^2]
 We then project the extracted features to a lower dimensional space using PCA.
 This procedure mirrors the technique described in section 3 for training the face databases.
 
@@ -422,7 +420,7 @@ Gaussian Naive Bayes & $99.9\%$ & $99.9\%$ \\ \hline
 
 The results from each classifier are nearly perfect. 
 This is perhaps expected given the clear linear separability in
-figure 11. In fact, on inspection, the primary feature is unsurprisingly
+figure 11. In fact on inspection, the primary feature is unsurprisingly
 dominated by the energy level. Because of the comparable accuracy of each 
 classifier, our final implementation uses a linear SVM due to its simplicity 
 and speed.
