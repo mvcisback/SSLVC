@@ -20,7 +20,12 @@ clean:
 paper: $(SECTIONS) pre
 	pandoc --toc -N -o $(OUTPUT) --template=$(TEMPLATE) $(SECTIONS) --latex-engine=$(ENGINE)
 
-test:
+test-grammar:
 	languagetool -d $(DISABLED_RULES) $(SECTIONS)
+
+test-spelling:
+	aspell -c $(SECTIONS)
+
+test: test-spelling test-grammar
 
 default: paper
