@@ -139,7 +139,7 @@ The procedure is summarized in figure 3.
 \end{figure}
 \centerline{}
 
-The system will require recalibration if/when the lighting
+The system will require re-calibration if/when the lighting
 and the background sound is different for both 3D audio
 reconstruction and speaker recognition.
 
@@ -221,9 +221,9 @@ video frames.
 Face Detection
 --------------
 
-The first step in detecting faces is preprocessing every frame. In most
-image processing application, preprocessing is done to assure better
-quality results. For this project the preprocessing steps are as
+The first step in detecting faces is prepossessing every frame. In most
+image processing application, prepossessing is done to assure better
+quality results. For this project the prepossessing steps are as
 follows,
 
 1. Resize the video frames to smaller dimensions so we can detect
@@ -331,7 +331,7 @@ Class 2 & $100\%$ \\ \hline
 \end{center}
 \centerline{Table 1: Face Classification Accuracy}
 
-As expected we have high accuracies, since the two classes were shown to
+As expected we have high accuracy, since the two classes were shown to
 be linearly separable in 2 dimensions.
 
 Face Tracking
@@ -360,7 +360,7 @@ In general, for recreating spatial audio for $n$ people, one requires at least
 $n-1$ training databases. Recall in section 2.1 we assumed that we
 only have up to 2 users in a video frame. Therefore, if we have the
 training dataset for one of the users, we can classify one in the
-databse with a lable and define a threshold for the other user; so we
+database with a label and define a threshold for the other user; so we
 can label him/her as unknown class. This threshold is defined as
 following,
 
@@ -387,7 +387,7 @@ VOICE ACTIVITY DETECTION AND CLASSIFICATION
 The following are details concerning the procedure used for voice classification.
 When developing our models, 10% of the data was separated for testing and the
 remaining 90% for training each class. The STFT of the signal uses
-non-overlaping rectangular windows corresponding to one frame.
+non-overlapping rectangular windows corresponding to one frame.
 The window size is computed as:
 
 > (@fps) window_size $= \frac{\text{samples}}{\text{seconds}} \cdot \frac{\text{seconds}}{\text{frames}} \cdot (\text{1 frame})$
@@ -430,14 +430,14 @@ Voice Classification
 
 The procedure for classifying speech is summarized in figure 12. The resulting
 classification results are given in table 3.
-In additon, the corresponding LCS and MFCC features are shown for a 2 dimensional
+In addition, the corresponding LCS and MFCC features are shown for a 2 dimensional
 space in figure 11 for non-speech signals, class 1 and class 2 speech
 signals. Non-speech and speech classes are clearly separable; however,
-the seperability of th speech classes remains suspect. Nevertheless, 
+the separability of the speech classes remains suspect. Nevertheless, 
 given the empirical success of the classifiers, the speech classes appear
-to be seperable in higher dimensions. Note that in our tests Ada-Boost had the highest
+to be separable in higher dimensions. Note that in our tests Ada-Boost had the highest
 classification accuracy. Our suspicion is that the other classifiers
-make Gaussian assumptions either explictly or implicitly in the euclidean distance
+make Gaussian assumptions either explicitly or implicitly in the euclidean distance
 measures. Ada Boost avoids this fate by using a collection of classifiers, that
 while potentially making individual Gaussian assumptions, are not necessarily Gaussian 
 distributed themselves.
@@ -492,7 +492,7 @@ classify each audio frame to one of three classes discussed in section
 In general we were able to recreate a sound that was guided by speaker’s
 faces. We also included some example video clips where a piece of music
 was guided by the users face. This technology can be specifically useful
-in hearing aids. Imagine wearing google glass. You can capture faces
+in hearing aids. Imagine wearing Google Glass. You can capture faces
 using the glass and capture speech using your hearing aid. We can do
 tracking and classification either on the glass, offline or on the cloud
 and then feed the resulting information to the hearing aid to form beams
@@ -520,7 +520,7 @@ at most frames, that is,
 
 > (@13) $w_{max} = argmax_w(P(user)_{k=1}^K \&_ {w=1}^{10})$
 
-, where $K$ is the number of frames. For our video, it turned out that the
+where $K$ is the number of frames. For our video, it turned out that the
 value of $w$ is $4$. This means that the multimodal classifier is
 putting more weight on the face classifier. This makes sense since the
 face classifier was able to achieve higher accuracy than the speech
@@ -584,10 +584,10 @@ Eigen faces and speeches for every user, we can simply scan the whole
 video frames and signals to extract one's face and speech by finding the
 best match between the signals and the corresponding Eigen values. This
 idea of unconstrained source separation has already been extensively
-investigated on video content analysis and sound recognitions in [8].
+investigated on video content analysis and sound recognition in [8].
 
 [^2]: The classification tool also supports averaging over a number of frames.
 
 [^3]: Functionally equivalent to a low pass filter
 
-[^4]: Mostly to keep the project tractable given the timeframe
+[^4]: Mostly to keep the project tractable given the time frame
