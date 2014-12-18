@@ -489,16 +489,6 @@ face model we already know where speakers are located at, so we simply
 classify each audio frame to one of three classes discussed in section
 4. We can then create a spatial sound for the two users.
 
-In general we were able to recreate a sound that was guided by speaker’s
-faces. We also included some example video clips where a piece of music
-was guided by the users face. This technology can be specifically useful
-in hearing aids. Imagine wearing Google Glass. You can capture faces
-using the glass and capture speech using your hearing aid. We can do
-tracking and classification either on the glass, offline or on the cloud
-and then feed the resulting information to the hearing aid to form beams
-toward the desired sound source and undo artifacts such as noise and
-reverberation in the room.
-
 We use the same video with two speakers from last time, to perform
 multimodal speaker recognition. This enables the calculation of the 
 recognition probabilities in (@model). Note however, we did not try to
@@ -528,6 +518,18 @@ classifier.
 
 FUTURE WORK
 ===========
+
+In general we were able to recreate a sound that was guided by speaker’s
+face. We also included some example video clips where a piece of music
+was guided by the users face. This technology can be specifically useful
+in hearing aids. 
+
+Imagine wearing Google Glass. You can capture faces
+using the glass and capture speech using your hearing aid. We can do
+tracking and classification either on the glass, offline or on the cloud
+and then feed the resulting information to the hearing aid to form beams
+toward the desired sound source and undo artifacts such as noise and
+reverberation in the room.
 
 One of the assumptions made in section 2 was that speakers do not talk
 at the same time. One can then apply source separation techniques [7] on
