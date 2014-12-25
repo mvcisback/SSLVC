@@ -1,7 +1,7 @@
 ---
 title: 3D AUDIO RECONSTRUCTION AND SPEAKER RECOGNITION USING SUPERVISED LEARNING METHODS BASED ON VOICE AND VISUAL CUES
 abstract: |
-   In this paper we present a novel approach to reconstruct 3D audio for multiple sources from a single channel input. This approach is based on face detection and tracking of visual cues using supervised learning methods. We also discuss a similar approach for improving speaker’s classification from a video stream by employing both facial and speech likelihoods, or simply Multimodal Speaker Recognition on a video stream.
+   We present a novel approach to reconstruct 3D audio for multiple sources from a single channel input. This approach is based on face detection and tracking of visual cues using supervised learning methods. We also discuss a similar approach for improving speaker’s classification from a video stream by employing both facial and speech likelihoods, or simply Multimodal Speaker Recognition on a video stream.
 
 keywords: |
   3D audio, speaker classification, visual cues, supervised learning, Multimodal Speaker Recognition
@@ -13,8 +13,7 @@ dept2: $^{*}$Dept. of Computer Science
 dept3: $^{\ddag}$Dept. of Physics
 ---
 
-Introduction
-============
+# Introduction
 
 Spatial audio and speaker classifications both have important
 applications in video conferencing and entertainment. With spatial
@@ -34,23 +33,13 @@ impossible, to recover spatial audio. That is why we propose a method by
 using the contents in the video, the visual cues, to help reconstruct
 3D audio.
 
-The other goal of this project is to perform multimodal speaker
-recognition using facial and speech likelihoods by first learning
-different features from a training video using a user friendly
-calibration procedure discussed in this paper. In section 2, we talk
-about the general flow of the algorithm for reconstructing 3D audio and
-speaker recognition algorithms. In section 3, face detection,
-classification, and tracking are discussed in detail. Then, in section 4,
-voice activity detection (VAD) and speech classification algorithms are
-explained thoroughly. Next in section 5, we shall go over the results for 3D audio
-reconstruction and multimodal speaker recognition. And finally, in
-section 4, we suggest future possibilities for our project in other
-systems and applications.
+Our system is constructed on top of PersonaDB, a database of persons audio and video features. 
+In Section 2, we describe how we collect training data and how we build the PersonaDB. Then in Section 3, we go over the process of recognizing speakers in a recorded video and how we localize and track them during the video. Later on, in Section 4, we see how the 3D audio will be reconstructed from a single microphone recorded video. And we present results in Section 5 and discuss further applications and future works in Section 6. 
 
 
 Training and constructing PersonaDB
 ===================================
-For detection purposes we costruct a database of face and voice features for persons of interest. The first step in the process is to collect training data for each person. Then we cleanse the voice and video data and pass them through classifiers. 
+Our system uses PersonaDB, a database of audio and video features for persons of interest. In this section we describe how this database is constructed. The first step in the process is to collect training data for each person. Then we cleanse the voice and video data and pass them through the classifiers. 
 
 ## Training and data collection ##
 
@@ -65,7 +54,7 @@ Activity Detection discussed later. Then each user is asked in turn to:
 This is repeated until all users have spoken. Note then, that
 the labels correspond to the order that speakers clapped.
 
-The procedure is summarized in figure 3.
+The procedure is summarized in figure 1.
 
 \begin{figure}[htb]
 \begin{minipage}[b]{0.98\linewidth}
@@ -119,7 +108,7 @@ Gaussian Naive Bayes & $99.9\%$ & $99.9\%$ \\ \hline
 
 The results from each classifier are nearly perfect. 
 This is perhaps expected given the clear linear separability in
-figure 11. In fact on inspection, the primary feature is unsurprisingly
+figure 2. In fact on inspection, the primary feature is unsurprisingly
 dominated by the energy level. Because of the comparable accuracy of each 
 classifier, our final implementation uses a linear SVM due to its simplicity 
 and speed.
@@ -191,7 +180,7 @@ detected faces are going to be small, we defined a threshold that would
 disregard any faces smaller than a certain number of pixels. This would
 create a precise training database. We then resize and vectorised all
 detected faces into a matrix for each user (face database). This is
-summarized in figure 5.
+summarized in figure 4.
 
 \begin{figure}[htb]
 \begin{minipage}[b]{0.88\linewidth}
@@ -224,7 +213,7 @@ horizontal axis. We don’t care for the exact position of those high
 variant pixels, we only need an approximation of which part of the frame
 that specific user is located at, e.g. left, right, up, down. The
 resulting pictures for frame subtraction, division and face detection are
-shown in figure 6.
+shown in figure 5.
 
 
 \begin{figure}[htb]
@@ -252,7 +241,7 @@ matrix. Face training is summarized below.
 > (@pca) $Pt = PCA(train,number\ of\ eigenvector)$
 > (@gmm) $Gpt = GMM(pt,dimensions)$
 
-The eigen faces from the PCA is shown in figure 7.
+The eigen faces from the PCA is shown in figure 6.
 
 ![Eigen faces for class 1](imgs/eigen_face.jpg)
 
@@ -374,7 +363,7 @@ figure 9. The spectrogram shown in figure 10 is also the tracking
 results; we mainly use it since it is clearer when visualizing the
 tracking over video frames.
 
-## 3D Audio Reconstruction ##
+# 3D Audio Reconstruction #
 
 In this section, we go over the procedure for reconstructing 3D audio:
 
