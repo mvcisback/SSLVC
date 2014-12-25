@@ -1,7 +1,7 @@
 ---
 title: 3D AUDIO RECONSTRUCTION AND SPEAKER RECOGNITION USING SUPERVISED LEARNING METHODS BASED ON VOICE AND VISUAL CUES
 abstract: |
-   In this paper we present a creative approach to reconstruct 3D audio for multiple sources from a single channel input by detecting and tracking visual cues using supervised learning methods. We also discuss a similar approach for improving speaker’s classification from a video stream by employing both facial and speech likelihoods, or simply Multimodal Speaker Recognition on a video stream.
+   In this paper we present a novel approach to reconstruct 3D audio for multiple sources from a single channel input. This approach is based on face detection and tracking of visual cues using supervised learning methods. We also discuss a similar approach for improving speaker’s classification from a video stream by employing both facial and speech likelihoods, or simply Multimodal Speaker Recognition on a video stream.
 
 keywords: |
   3D audio, speaker classification, visual cues, supervised learning, Multimodal Speaker Recognition
@@ -47,76 +47,14 @@ reconstruction and multimodal speaker recognition. And finally, in
 section 4, we suggest future possibilities for our project in other
 systems and applications.
 
-General Flow
-============
 
-In this section, the basic procedure for reconstructing 3D audio and
-multimodal speaker recognition are discussed.
+Training and constructing PersonaDB
+===================================
+For detection purposes we costruct a database of face and voice features for persons of interest. The first step in the process is to collect training data for each person. Then we cleanse the voice and video data and pass them through classifiers. 
 
-3D Audio Reconstruction
------------------------
+## Training and data collection ##
 
-One can reconstruct the 3D audio by convolving a mono sound with
-the spatial response corresponding to a desired location in space. These
-impulse responses can be captured by recording a maximum length sequence
-(MLS) at listener’s ears at different angles. We can then extract
-corresponding impulse responses by cross-correlating the recorded MLS
-with the original MLS as shown in (@1) (@2) (@3). These spatial responses
-are also called Head Related Impulse Response (hrir).
-
-> (@1) $index = argmax({C_{(MLS_{recorded},MLS_{original})}})$
->
-> (@2) $hrir_i = C_{(MLS_{recorded},MLS_{original})}(i-L:i+L)$
->
-> (@3) $3D_{audio} = signal_{mono} * hrir$
-
-, where $L$ is half the impulse response desired length. This number is
-usually about 128 samples, but it can differ based on the recording
-room, e.g. such the early reflection sample index and $C_{xy}$
-represents the cross-correlation between $x$ and $y$. In this project we
-used MIT HRTF database for reconstructing spatial audio [4].
-
-To avoid clicking sounds when reconstructing 3D audio and with the added 
-benefit of simplicity, we reconstruct the signal in frequency domain. In short,
-one must first find the short time Fourier transform of the signal and
-then multiplied that by the desired zero-padded HRTF and take inverse
-STFT to recover the time domain signal back, as shown in figure 1.
-
-![3D Audio Reconstruction](imgs/3d.jpg)
-
-Here, we have made the following assumptions:[^4]
-
-1. This algorithm is only able to spatialize speech based on a
-speaker’s face.
-2. There are at most two speakers in the video.
-3. At least one of the two speakers in the room is in the training
-database.
-4. There are no sudden movements in the video stream.
-
-Note the relaxing of these assumptions is discussed in section 4.
-For training purposes, we recorded a video clip of two
-people sitting on left and right of a video frame having a conversation,
-as shown in figure 2. With the video, we demonstrate a calibration procedure
-detailed below.
-
-\begin{figure}[htb]
-\begin{minipage}[b]{0.88\linewidth}
-\centering
-\centerline{\includegraphics[width=8.0cm]{imgs/faraz_marcell.jpg}}
-\centerline{}
-\centerline{\includegraphics[width=6.0cm]{imgs/part1.png}}
-\centerline{}
-\centerline{\includegraphics[width=6.0cm]{imgs/part4.png}}
-\centerline{}
-\centerline{\includegraphics[width=6.0cm]{imgs/part3.png}}
-\end{minipage}
-\caption{Recording of two people having a conversation followed by a depiction of 3D audio and speaker recognition}
-\label{fig:res}
-\end{figure}
-
-## Calibration ##
-
-The calibration procedure is as follows,
+The training data collection procedure is as follows,
 
 First there is a required silence period for calibrating the Voice 
 Activity Detection discussed later. Then each user is asked in turn to:
@@ -139,87 +77,103 @@ The procedure is summarized in figure 3.
 \end{figure}
 \centerline{}
 
-The system will require re-calibration if/when the lighting
-and the background sound is different for both 3D audio
+The system will require re-collection in case of the lighting
+and the background sound are different for both 3D audio
 reconstruction and speaker recognition.
 
-After collecting a training database, the classifier 
-discussed in section 3 and 4 is created.
 
-3D Audio Reconstruction
------------------------
+## VOICE ACTIVITY DETECTION AND CLASSIFICATION ##
 
-The procedure for reconstructing 3D audio is as follows:
+After data collection, we start the training process. The following are details concerning the procedure used for voice classification.
+When developing our models, 10% of the data was separated for testing and the
+remaining 90% for training each class. The STFT of the signal uses
+non-overlapping rectangular windows corresponding to one frame.
+The window size is computed as:
 
-1. Detect faces in the video stream for each frame and classify them to
-one in the database.
+> (@fps) window_size $= \frac{\text{samples}}{\text{seconds}} \cdot \frac{\text{seconds}}{\text{frames}} \cdot (\text{1 frame})$
 
-2. Map the position of each face to a meaningful HRTF angle in each
-frame.
+Frames serve as the base unit here because they are the base unit in the facial analysis, 
+allowing for one-to-one comparisons.[^2]
+We then project the extracted features to a lower dimensional space using PCA.
+This procedure mirrors the technique described in section 3 for training the face databases.
 
-3. Detect whether there is speech in a frame or not.
+### Voice Activity Detection (VAD) ###
 
-4. Label the frames with speech from step 4 with their corresponding
-class label in the database.
+Voice activity detection enables the filtering of non-speech components 
+(usually silence) from speech components. In order to do VAD, we developed
+a supervised technique for labeling the speaker classes (the signals between claps)
+and non-speech signals (the signals before the first clap). The VAD classification
+results for four different classifiers using Log Spectral Coefficients (LSC) or 
+Mel Frequency Cepstral Coefficients (MFCC) are listed in table 2.
 
-5. Use speech classification results to assign the speech from step 4 to
-the point find from step 2. That is, given a speech signal, find
-corresponding face location.
+\begin{center}
+\begin{tabular}{ | l|c | r| }
+\hline
+Classifier & LSC & MFCC \\ \hline
+Linear SVM & $99.9\%$ & $99.9\%$ \\ \hline
+Gaussian Naive Bayes & $99.9\%$ & $99.9\%$ \\ \hline
+20-Nearest Neighbor & $99.9\%$ & $99.9\%$ \\ \hline
+\end{tabular}
+\end{center}\centerline{Table 2: VAD Accuracy}
+\centerline{}
 
-6. Pick corresponding HRTFs from step 5 for each frame.
+The results from each classifier are nearly perfect. 
+This is perhaps expected given the clear linear separability in
+figure 11. In fact on inspection, the primary feature is unsurprisingly
+dominated by the energy level. Because of the comparable accuracy of each 
+classifier, our final implementation uses a linear SVM due to its simplicity 
+and speed.
 
-7. Reconstruct 3D audio as shown in figure 1.
+### Voice Classification ###
 
-Speaker Recognition
--------------------
+The procedure for classifying speech is summarized in figure 12. The resulting
+classification results are given in table 3.
+In addition, the corresponding LCS and MFCC features are shown for a 2 dimensional
+space in figure 11 for non-speech signals, class 1 and class 2 speech
+signals. Non-speech and speech classes are clearly separable; however,
+the separability of the speech classes remains suspect. Nevertheless, 
+given the empirical success of the classifiers, the speech classes appear
+to be separable in higher dimensions. Note that in our tests Ada-Boost had the highest
+classification accuracy. Our suspicion is that the other classifiers
+make Gaussian assumptions either explicitly or implicitly in the euclidean distance
+measures. Ada Boost avoids this fate by using a collection of classifiers, that
+while potentially making individual Gaussian assumptions, are not necessarily Gaussian 
+distributed themselves.
 
-Now let us consider speaker classification. Our goal is to augment
-the face classification using audio cues. Specifically, in the absence
-of a speaker, the recognition system should bias towards the
-facial classifier. Alternatively, if the speaker’s face cannot be
-detected, then the classification algorithm should bias towards speech
-classifier. To obtain this behavior we used the following model[9] for the
-classification probability.
+\begin{center}
+\begin{tabular}{ | l|c | r| }
+\hline
+Classifier & LSC & MFCC \\ \hline
+Linear SVM & $83.0\%$ & $85.3\%$ \\ \hline
+Gaussian Naive Bayes & $82.4\%$ & $80.2\%$ \\ \hline
+20-Nearest Neighbor & $84.9\%$ & $86.7\%$ \\ \hline
+Ada-Boost & $91.2\%$ & $90.3\%$ \\ \hline
+GMM & $83.5\%$ & $---$\\ \hline
+\end{tabular}
+\end{center}\centerline{Table 3: Voice Classification Accuracy}
 
-(@model) $P(user) = P(face|model)^{W_i}P(face \ model) + \ldots \\P(speech|model)^{W_{max}-W_i}P(speech \ model)$
+\begin{figure}[htb]
+\begin{minipage}[b]{0.88\linewidth}
+\centerline{\includegraphics[width=6.6cm]{imgs/mfcc_2pca.png}}
+\centerline{\includegraphics[width=6.6cm]{imgs/spectral_log_2pca.png}}
+\end{minipage}
+\caption{MFCC (top) and LSC features (bottom) for three classes}
+\label{fig:res}
+\end{figure}
 
-Here the prior probabilities in (@model) are assumed to be equally
-probable, although in practice they can/should be estimated based on
-prior data and the recording conditions.
+![Speech Classification](imgs/speech_class.jpg)
 
-Steps 1 through 4 in *3D Audio Reconstruction* are also performed when doing
-speaker recognition. After obtaining the training databases for faces and speech,
-we do the following,
+Now that we have our VAD and speech classifiers, we can easily assign
+labels to every analysis frames, e.g. no speech, class 1, class 1, class
+2, etc. The labels then allow selecting which face rectangle is active, yielding
+the location of each user at each frame.
 
-## Multimodal Speaker Recognition ##
+## FACE DETECTION, CLASSIFICATION AND TRACKING ##
 
-1. Find the likelihood of each user’s face given the face model in each
-frame analysis.
-2. Find the likelihood of each user’s speech given the speech model in
-each frame analysis.
-3. Determine the value of (@model) for $w=1, 2..., 10$.
-4. Find $w = argmax_w(P(user))$.
+The next step in the process after voice classification is face classification. In this section, we discuss the details of detecting faces in a video
+stream, training facial features.
 
-Higher $w$’s shows that the face classification results was better than
-speech classification results, and so we should put more weight on the
-facial classifier. This could be due to the quality of the training set,
-or just the fact that the face classifier works better than the speech
-classifier. As an example, one way of choosing $w$ is measure the SNR of
-the signal, and put more weight on the speech classifier when the SNR is
-higher. With figure 4 summarizing the general flow of this project, we
-conclude section 2.
-
-![Speaker Classification](imgs/project_598ps.jpg)
-
-FACE DETECTION, CLASSIFICATION AND TRACKING
-===========================================
-
-In this section, we discuss the details of detecting faces in a video
-stream, training facial features, and tracking faces throughout the
-video frames.
-
-Face Detection
---------------
+### Face Detection ###
 
 The first step in detecting faces is prepossessing every frame. In most
 image processing application, prepossessing is done to assure better
@@ -283,8 +237,7 @@ shown in figure 6.
 \label{fig:res}
 \end{figure}
 
-Face Classification
--------------------
+### Face Classification ###
 
 Now that we have a database of faces for each user, we need to train
 each database. We used Gaussian Mixture Models for training the facial
@@ -334,10 +287,50 @@ Class 2 & $100\%$ \\ \hline
 As expected we have high accuracy, since the two classes were shown to
 be linearly separable in 2 dimensions.
 
-Face Tracking
--------------
+# Speaker Recognition and Localization #
 
-Matlab’s face detection function draws a rectangle around the detected
+Now that we have PersonaDB inplace with all persons features, let us consider speaker classification and localization. Our goal is to augment
+the face classification using audio cues and further track the speaker for reconstructing the 3D audio. 
+
+To better expand the speaker recognition, we augument face and audio clasifiers. Intuitively, we expect a sophisticated speaker recognition system to bias toward the
+facial classifier in the absence of a speaker. Alternatively, if the speaker’s face cannot be
+detected, then the classification algorithm should bias towards speech
+classifier. To obtain this behavior we used the following model[9] for the
+classification probability.
+
+(@model) $P(user) = P(face|model)^{W_i}P(face \ model) + \ldots \\P(speech|model)^{W_{max}-W_i}P(speech \ model)$
+
+Here the prior probabilities in (@model) are assumed to be equally
+probable, although in practice they can/should be estimated based on
+prior data and the recording conditions.
+
+Steps 1 through 4 in *3D Audio Reconstruction* are also performed when doing
+speaker recognition. After obtaining the training databases for faces and speech,
+we do the following,
+
+## Multimodal Speaker Recognition ##
+
+1. Find the likelihood of each user’s face given the face model in each
+frame analysis.
+2. Find the likelihood of each user’s speech given the speech model in
+each frame analysis.
+3. Determine the value of (@model) for $w=1, 2..., 10$.
+4. Find $w = argmax_w(P(user))$.
+
+Higher $w$’s shows that the face classification results was better than
+speech classification results, and so we should put more weight on the
+facial classifier. This could be due to the quality of the training set,
+or just the fact that the face classifier works better than the speech
+classifier. As an example, one way of choosing $w$ is measure the SNR of
+the signal, and put more weight on the speech classifier when the SNR is
+higher. 
+
+![Speaker Classification](imgs/project_598ps.jpg)
+
+
+## Face Tracking ##
+
+Now that we have the speaker recognized, the next step for constructing the 3D audio is to localize and track the speaker. Matlab’s face detection function draws a rectangle around the detected
 faces. We extracted the coordinates for that rectangle and use the
 center of the rectangle as the position of the detected user. Such
 tracking algorithm usually does give good results due to face detection
@@ -381,95 +374,91 @@ figure 9. The spectrogram shown in figure 10 is also the tracking
 results; we mainly use it since it is clearer when visualizing the
 tracking over video frames.
 
-VOICE ACTIVITY DETECTION AND CLASSIFICATION
-===========================================
+## 3D Audio Reconstruction ##
 
-The following are details concerning the procedure used for voice classification.
-When developing our models, 10% of the data was separated for testing and the
-remaining 90% for training each class. The STFT of the signal uses
-non-overlapping rectangular windows corresponding to one frame.
-The window size is computed as:
+In this section, we go over the procedure for reconstructing 3D audio:
 
-> (@fps) window_size $= \frac{\text{samples}}{\text{seconds}} \cdot \frac{\text{seconds}}{\text{frames}} \cdot (\text{1 frame})$
+1. Detect faces in the video stream for each frame and classify them to
+one in the database.
 
-Frames serve as the base unit here because they are the base unit in the facial analysis, 
-allowing for one-to-one comparisons.[^2]
-We then project the extracted features to a lower dimensional space using PCA.
-This procedure mirrors the technique described in section 3 for training the face databases.
+2. Map the position of each face to a meaningful HRTF angle in each
+frame.
 
-Voice Activity Detection (VAD)
------------------------------
+3. Detect whether there is speech in a frame or not.
 
-Voice activity detection enables the filtering of non-speech components 
-(usually silence) from speech components. In order to do VAD, we developed
-a supervised technique for labeling the speaker classes (the signals between claps)
-and non-speech signals (the signals before the first clap). The VAD classification
-results for four different classifiers using Log Spectral Coefficients (LSC) or 
-Mel Frequency Cepstral Coefficients (MFCC) are listed in table 2.
+4. Label the frames with speech from step 4 with their corresponding
+class label in the database.
 
-\begin{center}
-\begin{tabular}{ | l|c | r| }
-\hline
-Classifier & LSC & MFCC \\ \hline
-Linear SVM & $99.9\%$ & $99.9\%$ \\ \hline
-Gaussian Naive Bayes & $99.9\%$ & $99.9\%$ \\ \hline
-20-Nearest Neighbor & $99.9\%$ & $99.9\%$ \\ \hline
-\end{tabular}
-\end{center}\centerline{Table 2: VAD Accuracy}
-\centerline{}
+5. Use speech classification results to assign the speech from step 4 to
+the point find from step 2. That is, given a speech signal, find
+corresponding face location.
 
-The results from each classifier are nearly perfect. 
-This is perhaps expected given the clear linear separability in
-figure 11. In fact on inspection, the primary feature is unsurprisingly
-dominated by the energy level. Because of the comparable accuracy of each 
-classifier, our final implementation uses a linear SVM due to its simplicity 
-and speed.
+6. Pick corresponding HRTFs from step 5 for each frame.
 
-Voice Classification
---------------------
+7. Reconstruct 3D audio as shown in figure 1.
 
-The procedure for classifying speech is summarized in figure 12. The resulting
-classification results are given in table 3.
-In addition, the corresponding LCS and MFCC features are shown for a 2 dimensional
-space in figure 11 for non-speech signals, class 1 and class 2 speech
-signals. Non-speech and speech classes are clearly separable; however,
-the separability of the speech classes remains suspect. Nevertheless, 
-given the empirical success of the classifiers, the speech classes appear
-to be separable in higher dimensions. Note that in our tests Ada-Boost had the highest
-classification accuracy. Our suspicion is that the other classifiers
-make Gaussian assumptions either explicitly or implicitly in the euclidean distance
-measures. Ada Boost avoids this fate by using a collection of classifiers, that
-while potentially making individual Gaussian assumptions, are not necessarily Gaussian 
-distributed themselves.
 
-\begin{center}
-\begin{tabular}{ | l|c | r| }
-\hline
-Classifier & LSC & MFCC \\ \hline
-Linear SVM & $83.0\%$ & $85.3\%$ \\ \hline
-Gaussian Naive Bayes & $82.4\%$ & $80.2\%$ \\ \hline
-20-Nearest Neighbor & $84.9\%$ & $86.7\%$ \\ \hline
-Ada-Boost & $91.2\%$ & $90.3\%$ \\ \hline
-GMM & $83.5\%$ & $---$\\ \hline
-\end{tabular}
-\end{center}\centerline{Table 3: Voice Classification Accuracy}
+3D Audio Reconstruction
+-----------------------
+
+One can reconstruct the 3D audio by convolving a mono sound with
+the spatial response corresponding to a desired location in space. These
+impulse responses can be captured by recording a maximum length sequence
+(MLS) at listener’s ears at different angles. We can then extract
+corresponding impulse responses by cross-correlating the recorded MLS
+with the original MLS as shown in (@1) (@2) (@3). These spatial responses
+are also called Head Related Impulse Response (hrir).
+
+> (@1) $index = argmax({C_{(MLS_{recorded},MLS_{original})}})$
+>
+> (@2) $hrir_i = C_{(MLS_{recorded},MLS_{original})}(i-L:i+L)$
+>
+> (@3) $3D_{audio} = signal_{mono} * hrir$
+
+, where $L$ is half the impulse response desired length. This number is
+usually about 128 samples, but it can differ based on the recording
+room, e.g. such the early reflection sample index and $C_{xy}$
+represents the cross-correlation between $x$ and $y$. In this project we
+used MIT HRTF database for reconstructing spatial audio [4].
+
+To avoid clicking sounds when reconstructing 3D audio and with the added 
+benefit of simplicity, we reconstruct the signal in frequency domain. In short,
+one must first find the short time Fourier transform of the signal and
+then multiplied that by the desired zero-padded HRTF and take inverse
+STFT to recover the time domain signal back, as shown in figure 1.
+
+![3D Audio Reconstruction](imgs/3d.jpg)
+
+Here, we have made the following assumptions:[^4]
+
+1. This algorithm is only able to spatialize speech based on a
+speaker’s face.
+2. There are at most two speakers in the video.
+3. At least one of the two speakers in the room is in the training
+database.
+4. There are no sudden movements in the video stream.
+
+Note the relaxing of these assumptions is discussed in section 4.
+For training purposes, we recorded a video clip of two
+people sitting on left and right of a video frame having a conversation,
+as shown in figure 2. With the video, we demonstrate a calibration procedure
+detailed below.
 
 \begin{figure}[htb]
 \begin{minipage}[b]{0.88\linewidth}
-\centerline{\includegraphics[width=6.6cm]{imgs/mfcc_2pca.png}}
-\centerline{\includegraphics[width=6.6cm]{imgs/spectral_log_2pca.png}}
+\centering
+\centerline{\includegraphics[width=8.0cm]{imgs/faraz_marcell.jpg}}
+\centerline{}
+\centerline{\includegraphics[width=6.0cm]{imgs/part1.png}}
+\centerline{}
+\centerline{\includegraphics[width=6.0cm]{imgs/part4.png}}
+\centerline{}
+\centerline{\includegraphics[width=6.0cm]{imgs/part3.png}}
 \end{minipage}
-\caption{MFCC (top) and LSC features (bottom) for three classes}
+\caption{Recording of two people having a conversation followed by a depiction of 3D audio and speaker recognition}
 \label{fig:res}
 \end{figure}
 
-![Speech Classification](imgs/speech_class.jpg)
-
-Now that we have our VAD and speech classifiers, we can easily assign
-labels to every analysis frames, e.g. no speech, class 1, class 1, class
-2, etc. The labels then allow selecting which face rectangle is active, yielding
-the location of each user at each frame from section 3 results. We then 
-reconstruct spatial audio using the techniques explained in section 2.1.
 
 Results
 =======
